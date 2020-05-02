@@ -1,0 +1,47 @@
+openapi: 3.0.5
+info:
+  title: ebook manager (ebmgr) App
+  description: ebook manager API
+  version: 0.1.0
+servers:
+- url: http://localhost:3333/api/v1
+  description: Local server
+#security:
+#- bearerAuth: []
+paths:
+  /books:
+    get:
+      description: Returns all books list
+      operationId: getBooks
+      responses:
+        "200":
+          description: A list of books
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Book'
+                x-content-type: application/json
+      x-swagger-router-controller: Default
+components:
+  schemas:
+    Book:
+      type: object
+      properties:
+        title:
+          type: string
+          description: title of book
+          example: some interesting title
+        path:
+          type: string
+          description: virtualized path of book
+          example: /foo/bar/baz
+      example:
+        title: some interesting title
+        path: /foo/bar/baz
+  securitySchemes:
+    bearerAuth:
+      type: http
+      description: API Key
+      scheme: bearer
