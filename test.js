@@ -1,4 +1,12 @@
-const ebmgr = require('./ebmgr.js');
+const ebmgr = require('./ebmgr');
 
 const items = ebmgr.getContents();
-console.log(items);
+for (const item of items) {
+  if (item.path.endsWith('pdf')) {
+    console.log(item);
+    const path = ebmgr.generateThumbnail(item.path);
+    console.log(path);
+    break;
+  }
+}
+
