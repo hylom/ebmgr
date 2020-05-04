@@ -1,11 +1,13 @@
 const ebmgr = require('./ebmgr');
+const fs = require('fs');
 
 const items = ebmgr.getContents();
 for (const item of items) {
-  if (item.path.endsWith('pdf')) {
+  if (item.path.endsWith('zip')) {
     console.log(item);
-    const path = ebmgr.generateThumbnail(item.path);
-    console.log(path);
+    const thumb = ebmgr.getThumbnail(item.path);
+    console.log(thumb);
+    fs.writeFileSync("./hoge.jpeg", thumb.data, {encoding: null});
     break;
   }
 }

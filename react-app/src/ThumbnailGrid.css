@@ -1,0 +1,12 @@
+.ThumbnailGrid li {
+    float: left;
+    width: 310px;
+    height: 310px;
+    list-style: none;
+    text-align: center;
+}
+
+.ThumbnailGrid img.thumbnail {
+    max-width: 300px;
+    max-height: 300px;
+}

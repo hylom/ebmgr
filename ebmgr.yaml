@@ -1,4 +1,4 @@
-openapi: 3.0.5
+openapi: 3.0.3
 info:
   title: ebook manager (ebmgr) App
   description: ebook manager API
@@ -6,11 +6,10 @@ info:
 servers:
 - url: http://localhost:3333/api/v1
   description: Local server
-#security:
-#- bearerAuth: []
 paths:
   /books:
     get:
+      x-swagger-router-controller: Default
       description: Returns all books list
       operationId: getBooks
       responses:
@@ -23,7 +22,28 @@ paths:
                 items:
                   $ref: '#/components/schemas/Book'
                 x-content-type: application/json
+  /books/{vpath}/thumbnail:
+    get:
       x-swagger-router-controller: Default
+      description: Returns a thumbnail of the book
+      operationId: getBookThumbnail
+      parameters:
+        - in: path
+          name: vpath
+          schema:
+            type: string
+          required: true
+          description: virtual path of the book
+      responses:
+        "404":
+          description: A book with the given vpath was not found
+        "200":
+          description: A thumbnail of book
+          content:
+            image/jpeg:
+              schema:
+                type: string
+                format: binary
 components:
   schemas:
     Book:

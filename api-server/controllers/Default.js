@@ -12,3 +12,21 @@ module.exports.getBooks = function getBooks (req, res, next) {
       utils.writeJson(res, response);
     });
 };
+
+module.exports.getBookThumbnail = function getBookThumbnail (req, res, next, vpath) {
+  Default.getBookThumbnail(vpath)
+    .then(function (thumb) {
+      if (!thumb) {
+        // resource not found
+        res.writeHead(404);
+        res.end();
+        return;
+      }
+      res.writeHead(200, {'Content-Type': thumb.contentType });
+      res.end(thumb.data);
+    })
+    .catch(function (response) {
+      res.writeHead(500);
+      res.end();
+    });
+};
