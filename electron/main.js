@@ -1,23 +1,8 @@
-const { app, BrowserWindow, protocol } = require('electron');
+const { app, BrowserWindow, protocol, ipcMain } = require('electron');
 const path = require('path');
-
-// use ./public as root directory
-app.on('ready', () => {
-  protocol.interceptFileProtocol(
-    'file',
-    (req, callback) => {
-      const url = req.url.substr(7);
-      callback({ path: path.normalize(__dirname + "/public/" + url)});
-    },
-    error => {
-      if (error) {
-        console.error('Failed to register protocol');
-      }
-    });
-});
+const ebmgr = require('./ebmgr');
 
 function createWindow () {
-  // ブラウザウインドウを作成
   let win = new BrowserWindow({
     width: 800,
     height: 600,
@@ -26,9 +11,7 @@ function createWindow () {
     }
   });
 
-  // そしてこのアプリの index.html をロード
-  win.loadURL('file:///index.html');
-
+  win.loadFile('./public/index.html');
   win.webContents.openDevTools();
 }
 
@@ -49,4 +32,33 @@ app.on('activate', () => {
   if (BrowserWindow.getAllWindows().length === 0) {
     createWindow();
   }
+});
+
+const channelSend = 'FunctionCall';
+
+ipcMain.on(channelSend, (event, method, requestId, params) => {
+  const channelRecv = `${method}_${requestId}`;
+  if (method == 'getBooks') {
+    ebmgr.getBooks().then(
+      result => {
+        event.reply(channelRecv, result);
+      },
+      error => {
+        event.reply(channelRecv, undefined, error);
+      }
+    );
+    return;
+  } else if (method == 'getBookThumbnail') {
+    ebmgr.getBookThumbnail(params).then(
+      result => {
+        event.reply(channelRecv, result);
+      },
+      error => {
+        event.reply(channelRecv, undefined, error);
+      }
+    );
+    return;
+  }
+  event.reply(channelRecv, undefined, { message: "method not found",
+                                        name: "InvalidMethodError" });
 });
