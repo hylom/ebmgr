@@ -6,10 +6,7 @@ const ebmgr = require('../../ebmgr.js');
  * returns List
  **/
 exports.getBooks = function() {
-  return new Promise(function(resolve, reject) {
-    const items = ebmgr.getContents();
-    resolve(items);
-  });
+  return ebmgr.getBooks();
 }
 
 /**
@@ -19,12 +16,5 @@ exports.getBooks = function() {
  * returns byte[]
  **/
 exports.getBookThumbnail = function(vpath) {
-  return new Promise(function(resolve, reject) {
-    const thumb = ebmgr.getThumbnail(vpath);
-    if (thumb) {
-      resolve(thumb);
-    } else {
-      resolve();
-    }
-  });
+  return ebmgr.getBookThumbnail(vpath);
 }

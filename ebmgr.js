@@ -33,12 +33,12 @@ function makeTempFile(vpath, ext) {
   return pathname;
 }
 
-exports.getThumbnail = getThumbnail;
-function getThumbnail(vpath, page) {
+exports.getBookThumbnail = getBookThumbnail;
+function getBookThumbnail(vpath, page) {
   // check given path
   const realPath = vpathToRealPath(vpath);
   if (!realPath) {
-    return undefined;
+    return Promise.reject();
   }
 
   const ext = path.extname(realPath).toLowerCase();
@@ -49,7 +49,8 @@ function getThumbnail(vpath, page) {
   if (ext == ".zip" || ext == ".cbz") {
     return getZipThumbnail(vpath);
   }
-};
+  return Promise.reject();
+}
 
 function getZipThumbnail(vpath) {
   const realPath = vpathToRealPath(vpath);
@@ -60,24 +61,24 @@ function getZipThumbnail(vpath) {
     if (!entry.isDirectory && rex.test(entry.entryName)) {
       console.log(entry.entryName);
       const data = zip.readFile(entry);
-      return { contentType: 'image/jpeg',
-               data: data };
+      return Promise.resolve({ contentType: 'image/jpeg',
+                               data: data });
     }
   }
+  return Promise.reject();
 }
 
-function getPdfThumbnail(vpath, page) {
-  const pathname = makeTempFile(vpath, ".jpeg");
-  generatePdfThumbnail(vpath, pathname, page);
+async function getPdfThumbnail(vpath, page) {
+  const pathname = await makeTempFile(vpath, ".jpeg");
+  await generatePdfThumbnail(vpath, pathname, page);
 
-  const data = fs.readFileSync(pathname);
-  fs.unlinkSync(pathname);
+  const data = await fs.promises.readFile(pathname);
+  await fs.promises.unlink(pathname);
 
   return { contentType: 'image/jpeg',
            data: data };
 }
   
-exports.generatePdfThumbnail = generatePdfThumbnail;
 function generatePdfThumbnail(vpath, destination, page) {
   page = page || 1;
   const realPath = vpathToRealPath(vpath);
@@ -97,8 +98,15 @@ function generatePdfThumbnail(vpath, destination, page) {
                    "-q",
                   realPath];
 
-  gs.executeSync(gsCmd);
-  return destination;
+  return new Promise((resolve, reject) => {
+    gs.execute(gsCmd, err => {
+      if (err) {
+        reject(err);
+        return;
+      }
+      resolve(destination);
+    });
+  });
 };
 
 function vpathToRealPath(vpath) {
@@ -118,21 +126,24 @@ function vpathToRealPath(vpath) {
 function main() {
   const targetDirs = config.contentDirectories;
   for (const dir of targetDirs) {
-    const r = getContents(dir);
+    const r = getBooks(dir);
     for (const item of r) {
       console.log(item);
     }
   }
 }
 
-exports.getContents = function getContents() {
-  const targetDirs = config.contentDirectories;
-  var results = [];
-  for (const dir of targetDirs) {
-    const r = searchContents(dir);
-    results = results.concat(r);
-  }
-  return results;
+exports.getBooks = getBooks;
+function getBooks() {
+  return new Promise((resolve, reject) => {
+    const targetDirs = config.contentDirectories;
+    var results = [];
+    for (const dir of targetDirs) {
+      const r = searchContents(dir);
+      results = results.concat(r);
+    }
+    resolve(results);
+  });
 };
 
 function searchContents(dirname) {
