@@ -7,7 +7,9 @@
     "adm-zip": "^0.4.14",
     "ghostscript4js": "^3.2.1"
   },
-  "devDependencies": {},
+  "devDependencies": {
+    "electron": "^8.2.5"
+  },
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
