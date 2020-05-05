@@ -1,0 +1,4 @@
+{
+  "targetExtentions": [ ".pdf", ".zip", ".cbz" ],
+  "contentDirectories" : [ "/path/to/contents/directory" ]
+}
