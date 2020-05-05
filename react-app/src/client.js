@@ -1,13 +1,36 @@
-import SwaggerClient from 'swagger-client';
-const SPEC_URL = 'http://localhost:3333/api-docs';
+import OaClient from './openapi-client';
+import IpcClient from './ipc-client';
 
-function getClient() {
-  return new SwaggerClient(SPEC_URL);
+export default function getClient() {
+  if (isElectron()) {
+    return new IpcClient();
+  } else {
+    return new OaClient();
+  }
 }
 
-export function getBooks() {
-  return getClient().then(client => {
-    return client.apis.default.getBooks().then(results => results.body);
-  });
+function isElectron() {
+  // Renderer process
+  if (typeof window !== 'undefined'
+      && typeof window.process === 'object'
+      && window.process.type === 'renderer') {
+    return true;
+  }
+
+  // Main process
+  if (typeof process !== 'undefined'
+      && typeof process.versions === 'object'
+      && !!process.versions.electron) {
+    return true;
+  }
+
+  // Detect the user agent when the `nodeIntegration` option is set to true
+  if (typeof navigator === 'object'
+      && typeof navigator.userAgent === 'string'
+      && navigator.userAgent.indexOf('Electron') >= 0) {
+    return true;
+  }
+
+  return false;
 }
 
