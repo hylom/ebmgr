@@ -18,4 +18,8 @@ export default class OaClient {
       return client.apis.default.getBookThumbnail({vpath: path});
     });
   }
+
+  openBook(path) {
+    return Promise.reject("openBook() is not implemented");
+  }
 }

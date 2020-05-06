@@ -1,5 +1,5 @@
 run:
-	./node_modules/.bin/electron main.js
+	EBM_MODE=development ./node_modules/.bin/electron main.js
 
 
 

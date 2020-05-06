@@ -22,7 +22,6 @@ class ThumbnailGrid extends Component {
 
   render() {
     const makeThumb = x => {
-      const encodedPath = encodeURIComponent(x.path);
       return (
           <li key={x.title}>
           <Thumbnail item={x} />

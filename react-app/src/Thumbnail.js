@@ -22,12 +22,20 @@ class Thumbnail extends Component {
     );
   }
 
+  onDoubleClickThumbnail() {
+    const client = getClient();
+    client.openBook(this.props.item.path).catch(error => {
+      console.log(error);
+    });
+  }
+
   render() {
     if (this.state.thumbnail) {
       const b64Data = this.state.thumbnail;
       return (
           <div className="Thumbnail">
-          <img className="thumbnail" alt={this.props.item.title} src={b64Data} />
+          <img className="thumbnail" alt={this.props.item.title} src={b64Data}
+               onDoubleClick={() => this.onDoubleClickThumbnail()}/>
           </div>
       );
     } else {

@@ -62,6 +62,17 @@ ipcMain.on(channelSend, (event, method, requestId, params) => {
       }
     );
     return;
+  } else if (method == 'openBook') {
+    const vpath = params;
+    ebmgr.openBook(params).then(
+      result => {
+        event.reply(channelRecv, result);
+      },
+      error => {
+        event.reply(channelRecv, undefined, error);
+      }
+    );
+    return;
   }
   event.reply(channelRecv, undefined, { message: "method not found",
                                         name: "InvalidMethodError" });

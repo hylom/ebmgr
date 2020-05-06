@@ -2,6 +2,7 @@ const path = require('path');
 const fs = require('fs');
 const os = require('os');
 const crypto = require('crypto');
+const child_process = require('child_process');
 
 const config = require('./config.json');
 const gs = require('ghostscript4js');
@@ -59,7 +60,6 @@ function getZipThumbnail(vpath) {
 
   for (const entry of zip.getEntries()) {
     if (!entry.isDirectory && rex.test(entry.entryName)) {
-      console.log(entry.entryName);
       const data = zip.readFile(entry);
       return Promise.resolve({ contentType: 'image/jpeg',
                                data: data });
@@ -173,6 +173,40 @@ function searchContents(dirname) {
       }
     }
   }
-
 }
 
+exports.openBook = openBook;
+function openBook(vpath) {
+  // check given path
+  const realPath = vpathToRealPath(vpath);
+  if (!realPath) {
+    return Promise.reject();
+  }
+
+  const openCmd = '/usr/bin/open';
+  const args = [ realPath ];
+  const opts = {};
+  const viewer = getViewer(vpath);
+
+  if (viewer && viewer.length) {
+    args.push('-a');
+    args.push(viewer);
+  }
+
+  return new Promise((resolve, reject) => {
+    child_process.execFile(openCmd, args, opts,
+                           (error, stdout, stderr) => {
+                             if (error) {
+                               reject(error);
+                               return;
+                             }
+                             resolve();
+                           });
+  });
+};
+
+function getViewer(vpath) {
+  const ext = path.extname(vpath).toLowerCase();
+  const viewers = config.viewers;
+  return viewers[ext];
+}

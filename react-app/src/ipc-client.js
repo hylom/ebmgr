@@ -42,5 +42,12 @@ export default class IpcClient {
         return result;
       });
   }
+
+  openBook(path) {
+    return this.sendRequest('openBook', path)
+      .then(result => {
+        return result;
+      });
+  }
 }
 

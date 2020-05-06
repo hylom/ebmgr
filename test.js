@@ -3,12 +3,16 @@ const fs = require('fs');
 
 ebmgr.getBooks().then(items => {
   for (const item of items) {
-    if (item.path.endsWith('pdf')) {
+    if (item.path.endsWith('zip')) {
       console.log(item);
-      ebmgr.getBookThumbnail(item.path).then(thumb => {
-        console.log(thumb);
-        fs.writeFileSync("./hoge.jpeg", thumb.data, {encoding: null});
-      });
+      ebmgr.openBook(item.path).then(
+        thumb => {
+          console.log("ok");
+        },
+        error => {
+          console.log(error);
+        }
+      );
       break;
     }
   }
