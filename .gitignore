@@ -5,3 +5,4 @@ package-lock.json
 electron/electron
 release
 config.json
+config.json.release

@@ -12,7 +12,8 @@ dist: $(APP_DEST)
               --exclude='electron' \
               --exclude='public' \
               $(ELECTRON_DIR)/ $(RES_DIR)/
-	cp -a ebmgr.js config.json $(RES_DIR)/
+	cp -a ebmgr.js $(RES_DIR)/
+	cp -a config.json.release $(RES_DIR)/config.json
 	rsync -a $(REACT_DIR)/build/ $(RES_DIR)/public/
 
 $(APP_DEST):
