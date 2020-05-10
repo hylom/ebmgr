@@ -5,14 +5,17 @@ ebmgr.getBooks().then(items => {
   for (const item of items) {
     if (item.path.endsWith('zip')) {
       console.log(item);
-      ebmgr.openBook(item.path).then(
-        thumb => {
-          console.log("ok");
-        },
-        error => {
-          console.log(error);
-        }
-      );
+      ebmgr.getBookThumbnail(item.path).then(thumb => {
+        console.log(thumb.contentType);
+      });
+      // ebmgr.openBook(item.path).then(
+      //   thumb => {
+      //     console.log("ok");
+      //   },
+      //   error => {
+      //     console.log(error);
+      //   }
+      // );
       break;
     }
   }

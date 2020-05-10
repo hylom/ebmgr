@@ -6,7 +6,8 @@
   "dependencies": {
     "adm-zip": "^0.4.14",
     "electron": "^8.2.5",
-    "ghostscript4js": "^3.2.1"
+    "ghostscript4js": "^3.2.1",
+    "sharp": "^0.25.2"
   },
   "devDependencies": {},
   "scripts": {

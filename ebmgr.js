@@ -7,6 +7,44 @@ const child_process = require('child_process');
 const config = require('./config.json');
 const gs = require('ghostscript4js');
 const AdmZip = require('adm-zip');
+const sharp = require('sharp');
+
+async function getThumbnailPath(realPath) {
+  const cacheDir = config.cacheDirectory;
+  if (!cacheDir) {
+    throw { message: 'no cacheDir given',
+            name: 'CacheDirNotFoundError' };
+  }
+
+  // check cacheDir exists
+  let stat;
+  try {
+    stat = await fs.promises.stat(cacheDir);
+  } catch (err) {
+    fs.promises.mkdir(cacheDir);
+  }
+
+  if (!stat.isDirectory()) {
+    throw { message: 'invalid cacheDir given',
+            name: 'InvalidCacheDirError' };
+  }
+  
+  stat = await fs.promises.stat(realPath);
+  let ext = '.jpeg';
+  return path.join(cacheDir, `${stat.dev}_${stat.ino}${ext}`);
+}
+
+function saveThumbnailCache(realPath, thumb) {
+  return getThumbnailPath(realPath).then(thumbPath => {
+    // resive image
+    sharp(thumb.data)
+      .resize({width: 300,
+               height: 300,
+               fit: sharp.fit.inside})
+      .toFile(thumbPath)
+      .then(() => thumb);
+  });
+}
 
 function getHash(target, algo) {
   algo = algo || 'md5';
@@ -35,22 +73,35 @@ function makeTempFile(vpath, ext) {
 }
 
 exports.getBookThumbnail = getBookThumbnail;
-function getBookThumbnail(vpath, page) {
+async function getBookThumbnail(vpath, page) {
   // check given path
   const realPath = vpathToRealPath(vpath);
   if (!realPath) {
     return Promise.reject();
   }
 
-  const ext = path.extname(realPath).toLowerCase();
-  if (ext == ".pdf") {
-    page = page || 1;
-    return getPdfThumbnail(vpath, page);
+  // check thumbnail if exists
+  try {
+    const thumbPath = await getThumbnailPath(realPath);
+    const data = await fs.promises.readFile(thumbPath);
+    return { contentType: 'image/jpeg',
+             data: data };
+  } catch (e) {
+    // thumbnail not found, then generate
+    const ext = path.extname(realPath).toLowerCase();
+    if (ext == ".pdf") {
+      page = page || 1;
+      const thumb = await getPdfThumbnail(vpath, page);
+      await saveThumbnailCache(realPath, thumb);
+      return thumb;
+    }
+    if (ext == ".zip" || ext == ".cbz") {
+      const thumb = await getZipThumbnail(vpath);
+      await saveThumbnailCache(realPath, thumb);
+      return thumb;
+    }
+    return Promise.reject();
   }
-  if (ext == ".zip" || ext == ".cbz") {
-    return getZipThumbnail(vpath);
-  }
-  return Promise.reject();
 }
 
 function getZipThumbnail(vpath) {
