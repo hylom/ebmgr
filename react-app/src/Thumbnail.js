@@ -5,10 +5,14 @@ class Thumbnail extends Component {
   constructor (props) {
     super(props);
     this.state = { thumbnail: null,
+                   status: 'waitToLoad',
                  };
   }
 
   componentDidMount() {
+  }
+
+  loadThumbnail() {
     const client = getClient();
     client.getBookThumbnail(this.props.item.path).then(
       result => {
@@ -17,6 +21,9 @@ class Thumbnail extends Component {
         reader.readAsDataURL(result.data);
         reader.addEventListener('load', event => {
           this.setState({thumbnail: reader.result});
+          if (this.props.onLoad) {
+            this.props.onLoad();
+          }
         });
       }
     );
