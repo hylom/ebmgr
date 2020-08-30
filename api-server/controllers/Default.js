@@ -26,6 +26,7 @@ module.exports.getBookThumbnail = function getBookThumbnail (req, res, next, vpa
       res.end(thumb.data);
     })
     .catch(function (response) {
+      console.log(response);
       res.writeHead(500);
       res.end();
     });

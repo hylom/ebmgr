@@ -77,7 +77,7 @@ async function getBookThumbnail(vpath, page) {
   // check given path
   const realPath = vpathToRealPath(vpath);
   if (!realPath) {
-    return Promise.reject();
+    return Promise.reject(`invalid vpath: ${vpath}`);
   }
 
   // check thumbnail if exists
@@ -100,23 +100,29 @@ async function getBookThumbnail(vpath, page) {
       await saveThumbnailCache(realPath, thumb);
       return thumb;
     }
-    return Promise.reject();
+    return Promise.reject(`invalid file extension: ${ext} (target: ${path} )`);
   }
 }
 
 function getZipThumbnail(vpath) {
   const realPath = vpathToRealPath(vpath);
   const zip = new AdmZip(realPath);
-  const rex = /(\.jpeg|\.jpg)$/;
+  const rex_jpg = /(\.jpeg|\.jpg)$/i;
+  const rex_png = /(\.png)$/i;
 
   for (const entry of zip.getEntries()) {
-    if (!entry.isDirectory && rex.test(entry.entryName)) {
+    if (!entry.isDirectory && rex_jpg.test(entry.entryName)) {
       const data = zip.readFile(entry);
       return Promise.resolve({ contentType: 'image/jpeg',
                                data: data });
     }
+    if (!entry.isDirectory && rex_png.test(entry.entryName)) {
+      const data = zip.readFile(entry);
+      return Promise.resolve({ contentType: 'image/png',
+                               data: data });
+    }
   }
-  return Promise.reject();
+  return Promise.reject(`cannot get zip thumbnail for ${realPath}`);
 }
 
 async function getPdfThumbnail(vpath, page) {
@@ -178,9 +184,9 @@ function main() {
   const targetDirs = config.contentDirectories;
   for (const dir of targetDirs) {
     const r = getBooks(dir);
-    for (const item of r) {
-      console.log(item);
-    }
+    // for (const item of r) {
+    //   console.log(item);
+    // }
   }
 }
 
@@ -231,7 +237,7 @@ function openBook(vpath) {
   // check given path
   const realPath = vpathToRealPath(vpath);
   if (!realPath) {
-    return Promise.reject();
+    return Promise.reject(`cannot open book: ${realPath}`);
   }
 
   const openCmd = '/usr/bin/open';

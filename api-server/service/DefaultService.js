@@ -7,7 +7,7 @@ const ebmgr = require('../../ebmgr.js');
  **/
 exports.getBooks = function() {
   return ebmgr.getBooks();
-}
+};
 
 /**
  * Returns a thumbnail of the book
@@ -17,4 +17,4 @@ exports.getBooks = function() {
  **/
 exports.getBookThumbnail = function(vpath) {
   return ebmgr.getBookThumbnail(vpath);
-}
+};
