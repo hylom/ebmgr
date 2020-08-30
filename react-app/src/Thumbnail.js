@@ -14,19 +14,30 @@ class Thumbnail extends Component {
 
   loadThumbnail() {
     const client = getClient();
-    client.getBookThumbnail(this.props.item.path).then(
-      result => {
-        //console.log(result);
-        const reader = new FileReader();
-        reader.readAsDataURL(result.data);
-        reader.addEventListener('load', event => {
-          this.setState({thumbnail: reader.result});
+    client.getBookThumbnail(this.props.item.path)
+      .then(
+        result => {
+          //console.log(result);
+          const reader = new FileReader();
+          reader.readAsDataURL(result.data);
+          reader.addEventListener('load', event => {
+            this.setState({ thumbnail: reader.result,
+                            status: 'loaded',
+                          });
+            if (this.props.onLoad) {
+              this.props.onLoad({});
+            }
+          });
+        }
+      )
+      .catch(
+        err => {
           if (this.props.onLoad) {
-            this.props.onLoad();
+            this.setState({ status: 'failToLoad' });
+            this.props.onLoad({error: err});
           }
-        });
-      }
-    );
+        }
+      );
   }
 
   onDoubleClickThumbnail() {

@@ -26,11 +26,15 @@ class ThumbnailGrid extends Component {
     });
   }
 
-  thumbnailLoaded() {
-    console.log("thumb loaded");
-    this.refs.statusBar.incrementLoadedItems();
+  thumbnailLoaded(err) {
+    if (err.error) {
+      console.log(err.error);
+    } else {
+      this.refs.statusBar.incrementLoadedItems();
+    }
     for (const refName in this.refs) {
-      if (refName.match(/^path:/) && !this.refs[refName].state.thumbnail) {
+      if (refName.match(/^path:/)
+          && this.refs[refName].state.status == 'waitToLoad') {
         this.refs[refName].loadThumbnail();
         return;
       }
