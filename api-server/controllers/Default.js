@@ -25,9 +25,10 @@ module.exports.getBookThumbnail = function getBookThumbnail (req, res, next, vpa
       res.writeHead(200, {'Content-Type': thumb.contentType });
       res.end(thumb.data);
     })
-    .catch(function (response) {
-      console.log(response);
-      res.writeHead(500);
-      res.end();
+    .catch(function (message) {
+      const resp = JSON.stringify({message: message});
+      res.writeHead(403, {'Content-Type': 'application/json'});
+      res.end(resp);
+      console.log(resp);
     });
 };

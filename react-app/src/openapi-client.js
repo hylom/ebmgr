@@ -15,7 +15,13 @@ export default class OaClient {
 
   getBookThumbnail(path) {
     return this.getClient().then(client => {
-      return client.apis.default.getBookThumbnail({vpath: path});
+      return client.apis.default.getBookThumbnail({vpath: path})
+        .catch(err => {
+          if (err.response.body) {
+            throw err.response.body;
+          }
+          throw err;
+        });
     });
   }
 

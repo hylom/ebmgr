@@ -40,6 +40,9 @@ export default class IpcClient {
       .then(result => {
         result.data = new Blob([result.data]);
         return result;
+      })
+      .catch(err => {
+        return { message: err };
       });
   }
 

@@ -4,4 +4,16 @@
     left: 0;
     width: 100%;
     border: 1px solid;
+    box-sizing: border-box;
+}
+
+.StatusBar span {
+    margin: 1em;
+}
+
+.StatusBar .log {
+    border: 1px solid;
+    background: lightyellow;
+    margin: 1em;
+    padding: 1em;
 }

@@ -3,6 +3,7 @@ import getClient from './client.js';
 import './ThumbnailGrid.css';
 import Thumbnail from './Thumbnail';
 import StatusBar from './StatusBar';
+import Logger from './logger';
 
 class ThumbnailGrid extends Component {
   constructor () {
@@ -10,6 +11,7 @@ class ThumbnailGrid extends Component {
     this.state = { items: [],
                    loading: true,
                  };
+    this.logger = new Logger();
   }
 
   componentDidMount() {
@@ -28,17 +30,22 @@ class ThumbnailGrid extends Component {
 
   thumbnailLoaded(err) {
     if (err.error) {
-      console.log(err.error);
+      this.logger.info(err.error);
     } else {
       this.refs.statusBar.incrementLoadedItems();
     }
     for (const refName in this.refs) {
       if (refName.match(/^path:/)
-          && this.refs[refName].state.status == 'waitToLoad') {
+          && this.refs[refName].state.status === 'waitToLoad') {
         this.refs[refName].loadThumbnail();
         return;
       }
     }
+    this._thumbnailLoadingFinished();
+  }
+
+  _thumbnailLoadingFinished() {
+    this.refs.statusBar.thumbnailLoadingFinished();
   }
 
   render() {
@@ -55,7 +62,7 @@ class ThumbnailGrid extends Component {
     const listItems = this.state.items.map(makeThumb);
     return (
         <div className="ThumbnailGrid">
-        <StatusBar ref="statusBar"/>
+        <StatusBar ref="statusBar" logger={this.logger}/>
         <ul>{listItems}</ul>
         </div>
     );

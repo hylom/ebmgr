@@ -37,6 +37,12 @@ paths:
       responses:
         "404":
           description: A book with the given vpath was not found
+        "403":
+          description: A book exists but cannot get thumbnail
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
         "200":
           description: A thumbnail of book
           content:
@@ -60,6 +66,13 @@ components:
       example:
         title: some interesting title
         path: /foo/bar/baz
+    Error:
+      type: object
+      properties:
+        message:
+          type: string
+          description: error message
+          example: some error occured
   securitySchemes:
     bearerAuth:
       type: http

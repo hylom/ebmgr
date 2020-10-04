@@ -34,6 +34,11 @@ class Thumbnail extends Component {
         err => {
           if (this.props.onLoad) {
             this.setState({ status: 'failToLoad' });
+            if (err.message) {
+              const mesg = `${this.props.item.path}: ${err.message}`;
+              this.props.onLoad({error: mesg});
+              return;
+            }
             this.props.onLoad({error: err});
           }
         }
