@@ -1,6 +1,6 @@
 const { app, BrowserWindow, protocol, ipcMain } = require('electron');
 const path = require('path');
-const ebmgr = require('./ebmgr');
+const ebmgr = require('../bookmanager/bookmanager.js');
 
 function createWindow () {
   let win = new BrowserWindow({

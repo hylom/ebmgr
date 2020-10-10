@@ -1,2 +1,0 @@
-const ebmgr = require('./ebmgr');
-

@@ -59,7 +59,7 @@ components:
           type: string
           description: title of book
           example: some interesting title
-        path:
+        vpath:
           type: string
           description: virtualized path of book
           example: /foo/bar/baz

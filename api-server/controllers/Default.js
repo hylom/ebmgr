@@ -1,21 +1,30 @@
-'use strict';
+const BookManager = require('../../bookmanager/bookmanager.js');
+const config = require('../../config.json');
 
-var utils = require('../utils/writer.js');
-var Default = require('../service/DefaultService');
+const ebmgr = new BookManager(config);
 
 module.exports.getBooks = function getBooks (req, res, next) {
-  Default.getBooks()
-    .then(function (response) {
-      utils.writeJson(res, response);
+  ebmgr.getBooks()
+    .then(result => {
+      res.status(200);
+      res.json(result);
+      res.end();
     })
-    .catch(function (response) {
-      utils.writeJson(res, response);
+    .catch(error => {
+      console.log(error);
+      if (error.status) {
+        res.status(error.status);
+      } else {
+        res.status(500);
+      }
+      res.json(error);
+      res.end();
     });
 };
 
 module.exports.getBookThumbnail = function getBookThumbnail (req, res, next, vpath) {
-  Default.getBookThumbnail(vpath)
-    .then(function (thumb) {
+  ebmgr.getBookThumbnail(vpath)
+    .then(thumb => {
       if (!thumb) {
         // resource not found
         res.writeHead(404);
@@ -25,10 +34,14 @@ module.exports.getBookThumbnail = function getBookThumbnail (req, res, next, vpa
       res.writeHead(200, {'Content-Type': thumb.contentType });
       res.end(thumb.data);
     })
-    .catch(function (message) {
-      const resp = JSON.stringify({message: message});
-      res.writeHead(403, {'Content-Type': 'application/json'});
-      res.end(resp);
-      console.log(resp);
+    .catch(error => {
+      if (error.status) {
+        res.status(error.status);
+      } else {
+        res.status(500);
+      }
+      res.json(error);
+      res.end();
+      return;
     });
 };

@@ -8,21 +8,23 @@ export default class OaClient {
   }
 
   getBooks() {
-    return this.getClient().then(client => {
-      return client.apis.default.getBooks().then(results => results.body);
-    });
+    return this.getClient()
+      .then(client => {
+        return client.apis.default.getBooks().then(results => results.body);
+      });
   }
 
   getBookThumbnail(path) {
-    return this.getClient().then(client => {
-      return client.apis.default.getBookThumbnail({vpath: path})
-        .catch(err => {
-          if (err.response.body) {
-            throw err.response.body;
-          }
-          throw err;
-        });
-    });
+    return this.getClient()
+      .then(client => {
+        return client.apis.default.getBookThumbnail({vpath: path})
+          .catch(err => {
+            if (err.response.body) {
+              throw err.response.body;
+            }
+            throw err;
+          });
+      });
   }
 
   openBook(path) {

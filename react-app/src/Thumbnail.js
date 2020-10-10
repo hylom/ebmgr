@@ -14,7 +14,7 @@ class Thumbnail extends Component {
 
   loadThumbnail() {
     const client = getClient();
-    client.getBookThumbnail(this.props.item.path)
+    client.getBookThumbnail(this.props.item.vpath)
       .then(
         result => {
           //console.log(result);
@@ -35,7 +35,7 @@ class Thumbnail extends Component {
           if (this.props.onLoad) {
             this.setState({ status: 'failToLoad' });
             if (err.message) {
-              const mesg = `${this.props.item.path}: ${err.message}`;
+              const mesg = `${this.props.item.vpath}: ${err.message}`;
               this.props.onLoad({error: mesg});
               return;
             }
@@ -47,7 +47,7 @@ class Thumbnail extends Component {
 
   onDoubleClickThumbnail() {
     const client = getClient();
-    client.openBook(this.props.item.path).catch(error => {
+    client.openBook(this.props.item.vpath).catch(error => {
       console.log(error);
     });
   }

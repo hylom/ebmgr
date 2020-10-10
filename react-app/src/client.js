@@ -2,14 +2,14 @@ import OaClient from './openapi-client';
 import IpcClient from './ipc-client';
 
 export default function getClient() {
-  if (isElectron()) {
+  if (isInElectron()) {
     return new IpcClient();
   } else {
     return new OaClient();
   }
 }
 
-function isElectron() {
+function isInElectron() {
   // Renderer process
   if (typeof window !== 'undefined'
       && typeof window.process === 'object'

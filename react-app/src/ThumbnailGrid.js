@@ -22,7 +22,7 @@ class ThumbnailGrid extends Component {
                     });
       this.refs.statusBar.setNumberOfItems(results.length);
       if (results.length > 0) {
-        const p = 'path:' + results[0].path;
+        const p = 'path:' + results[0].vpath;
         this.refs[p].loadThumbnail();
       }
     });
@@ -54,7 +54,7 @@ class ThumbnailGrid extends Component {
           <li key={x.title}>
           <Thumbnail onLoad={this.thumbnailLoaded.bind(this)}
                      item={x}
-                     ref={'path:' + x.path}
+                     ref={'path:' + x.vpath}
           />
           </li>
       );
