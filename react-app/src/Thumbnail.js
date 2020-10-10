@@ -17,7 +17,6 @@ class Thumbnail extends Component {
     client.getBookThumbnail(this.props.item.vpath)
       .then(
         result => {
-          //console.log(result);
           const reader = new FileReader();
           reader.readAsDataURL(result.data);
           reader.addEventListener('load', event => {
@@ -32,14 +31,11 @@ class Thumbnail extends Component {
       )
       .catch(
         err => {
+          console.log(err);
           if (this.props.onLoad) {
             this.setState({ status: 'failToLoad' });
-            if (err.message) {
-              const mesg = `${this.props.item.vpath}: ${err.message}`;
-              this.props.onLoad({error: mesg});
-              return;
-            }
-            this.props.onLoad({error: err});
+            const mesg = err.message || err;
+            this.props.onLoad({error: `${this.props.item.vpath}: ${mesg}`});
           }
         }
       );
