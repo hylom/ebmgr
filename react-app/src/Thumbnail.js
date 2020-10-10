@@ -7,9 +7,28 @@ class Thumbnail extends Component {
     this.state = { thumbnail: null,
                    status: 'waitToLoad',
                  };
+    this.rootRef = React.createRef();
   }
 
   componentDidMount() {
+    // register IntersectionObserver
+    const options = {
+      root: null,
+      threshold: 0,
+    };
+    this.observer = new IntersectionObserver(x => {this.onChangeIntersection(x);},
+                                             options);
+    this.observer.observe(this.rootRef.current);
+  }
+
+  onChangeIntersection(entries) {
+    if (entries.length > 0) {
+      const entry = entries[0];
+      if (entry.isIntersecting && !this.state.thumbnail) {
+        this.loadThumbnail();
+        this.observer.disconnect();
+      }
+    }
   }
 
   loadThumbnail() {
@@ -23,8 +42,8 @@ class Thumbnail extends Component {
             this.setState({ thumbnail: reader.result,
                             status: 'loaded',
                           });
-            if (this.props.onLoad) {
-              this.props.onLoad({});
+            if (this.props.onLoadThumbnail) {
+              this.props.onLoadThumbnail({});
             }
           });
         }
@@ -32,10 +51,10 @@ class Thumbnail extends Component {
       .catch(
         err => {
           console.log(err);
-          if (this.props.onLoad) {
+          if (this.props.onLoadThumbnail) {
             this.setState({ status: 'failToLoad' });
             const mesg = err.message || err;
-            this.props.onLoad({error: `${this.props.item.vpath}: ${mesg}`});
+            this.props.onLoadThumbnail({error: `${this.props.item.vpath}: ${mesg}`});
           }
         }
       );
@@ -52,14 +71,14 @@ class Thumbnail extends Component {
     if (this.state.thumbnail) {
       const b64Data = this.state.thumbnail;
       return (
-          <div className="Thumbnail">
+          <div className="Thumbnail" ref={this.rootRef}>
           <img className="thumbnail" alt={this.props.item.title} src={b64Data}
                onDoubleClick={() => this.onDoubleClickThumbnail()}/>
           </div>
       );
     } else {
       return (
-          <div className="Thumbnail">loading...</div>
+          <div className="Thumbnail" ref={this.rootRef}>loading...</div>
       );
     }
   }

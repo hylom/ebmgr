@@ -1,17 +1,19 @@
-.StatusBar {
-    position: absolute;
+.MessageBar {
+    position: fixed;
     top: 0;
     left: 0;
     width: 100%;
-    border: 1px solid;
+    border: 1px solid lightgray;
     box-sizing: border-box;
+    background: white;
+    
 }
 
-.StatusBar span {
+.MessageBar span {
     margin: 1em;
 }
 
-.StatusBar .log {
+.MessageBar .log {
     border: 1px solid;
     background: lightyellow;
     margin: 1em;
