@@ -8,6 +8,7 @@ import Logger from './logger';
 class ThumbnailGrid extends Component {
   constructor () {
     super();
+    this.statusBar = React.createRef();
     this.state = { items: [],
                    loading: true,
                  };
@@ -17,13 +18,14 @@ class ThumbnailGrid extends Component {
   componentDidMount() {
     const client = getClient();
     client.getBooks().then(results => {
+      // add refs
+      results.map(x => x.ref = React.createRef());
       this.setState({ items: results,
                       loading: false,
                     });
-      this.refs.statusBar.setNumberOfItems(results.length);
+      this.statusBar.current.setNumberOfItems(results.length);
       if (results.length > 0) {
-        const p = 'path:' + results[0].vpath;
-        this.refs[p].loadThumbnail();
+        results[0].ref.current.loadThumbnail();
       }
     });
   }
@@ -32,8 +34,15 @@ class ThumbnailGrid extends Component {
     if (err.error) {
       this.logger.info(err.error);
     } else {
-      this.refs.statusBar.incrementLoadedItems();
+      this.statusBar.current.incrementLoadedItems();
     }
+    for (const thumb of this.state.items) {
+      if (thumb.ref.current.state.status === 'waitToLoad') {
+        thumb.ref.current.loadThumbnail();
+        return;
+      }
+    }
+    /*
     for (const refName in this.refs) {
       if (refName.match(/^path:/)
           && this.refs[refName].state.status === 'waitToLoad') {
@@ -41,11 +50,12 @@ class ThumbnailGrid extends Component {
         return;
       }
     }
+    */
     this._thumbnailLoadingFinished();
   }
 
   _thumbnailLoadingFinished() {
-    this.refs.statusBar.thumbnailLoadingFinished();
+    this.statusBar.current.thumbnailLoadingFinished();
   }
 
   render() {
@@ -54,7 +64,7 @@ class ThumbnailGrid extends Component {
           <li key={x.title}>
           <Thumbnail onLoad={this.thumbnailLoaded.bind(this)}
                      item={x}
-                     ref={'path:' + x.vpath}
+                     ref={x.ref}
           />
           </li>
       );
@@ -62,7 +72,7 @@ class ThumbnailGrid extends Component {
     const listItems = this.state.items.map(makeThumb);
     return (
         <div className="ThumbnailGrid">
-        <StatusBar ref="statusBar" logger={this.logger}/>
+        <StatusBar ref={this.statusBar} logger={this.logger}/>
         <ul>{listItems}</ul>
         </div>
     );
