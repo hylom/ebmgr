@@ -10,6 +10,11 @@ class Thumbnail extends Component {
                    status: 'waitToLoad',
                  };
     this.rootRef = React.createRef();
+
+    this.onChangeIntersection = this.onChangeIntersection.bind(this);
+    this.loadThumbnail = this.loadThumbnail.bind(this);
+    this.onDoubleClickThumbnail = this.onDoubleClickThumbnail.bind(this);
+    this.toggleFav = this.toggleFav.bind(this);
   }
 
   componentDidMount() {
@@ -18,11 +23,12 @@ class Thumbnail extends Component {
       root: null,
       threshold: 0,
     };
-    this.observer = new IntersectionObserver(x => {this.onChangeIntersection(x);},
+    this.observer = new IntersectionObserver(this.onChangeIntersection,
                                              options);
     this.observer.observe(this.rootRef.current);
   }
 
+  // handlers
   onChangeIntersection(entries) {
     if (entries.length > 0) {
       const entry = entries[0];
@@ -70,7 +76,9 @@ class Thumbnail extends Component {
   }
 
   toggleFav() {
-    this.props.toggleFavorite(this.props.item.vpath);
+    this.props.setFavorite(this.props.item.vpath,
+                           this.props.item.starred ? false : true,
+                          );
   }
 
   render() {
@@ -78,18 +86,19 @@ class Thumbnail extends Component {
       const b64Data = this.state.thumbnail;
       let header = "";
       if (this.props.item.starred) {
-        header = <img className="favorite" src={favoriteIcon} title="favorite"
-        onClick={() => this.toggleFav()} />;
+        header = <img className="favorite" src={favoriteIcon}
+                      alt="favorite" title="favorite"
+                      onClick={this.toggleFav} />;
       } else {
         header = <img className="non-favorite" src={favoriteIcon}
-                      title="favorite"
-        onClick={() => this.toggleFav()} />;
+                      alt="favorite" title="favorite"
+                      onClick={this.toggleFav} />;
       }
       return (
           <div className="Thumbnail" ref={this.rootRef}>
           <div className="thumbnail-header">{header}</div>
           <img className="thumbnail" alt={this.props.item.title} src={b64Data}
-               onDoubleClick={() => this.onDoubleClickThumbnail()}/>
+               onDoubleClick={this.onDoubleClickThumbnail}/>
           <div className="thumbnail-footer">{this.props.item.title}</div>
           </div>
       );

@@ -30,4 +30,18 @@ export default class OaClient {
   openBook(path) {
     return Promise.reject("openBook() is not implemented");
   }
+
+  setStar(vpath, state) {
+    return this.getClient()
+      .then(client => {
+        return client.apis.default.setStar({vpath: vpath},
+                                           {requestBody: {star: state}})
+          .catch(err => {
+            if (err.response.body) {
+              throw err.response.body;
+            }
+            throw err;
+          });
+      });
+  }
 }

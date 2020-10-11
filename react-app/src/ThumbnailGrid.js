@@ -13,6 +13,9 @@ class ThumbnailGrid extends Component {
                    loading: true,
                  };
     this.logger = new Logger();
+
+    this.setFavorite = this.setFavorite.bind(this);
+    this.thumbnailLoaded = this.thumbnailLoaded.bind(this);
   }
 
   componentDidMount() {
@@ -31,16 +34,32 @@ class ThumbnailGrid extends Component {
     }
   }
 
-  toggleFavorite(vpath) {
-    console.log(vpath);
+  setFavorite(vpath, val) {
+    const client = getClient();
+    client.setStar(vpath, val)
+      .then(
+        () => {
+          this.setState((state, props) => {
+            const item = state.items.find(x => x.vpath === vpath);
+            if (item) {
+              item.starred = val;
+              return {items: state.items};
+            }
+            return {};
+          });
+        })
+      .catch(
+        err => {
+          // error handling
+        });
   }
 
   render() {
     const makeThumb = x => {
       return (
           <li key={x.title}>
-          <Thumbnail onLoadThumbnail={this.thumbnailLoaded.bind(this)}
-                     toggleFavorite={this.toggleFavorite.bind(this)}
+          <Thumbnail onLoadThumbnail={this.thumbnailLoaded}
+                     setFavorite={this.setFavorite}
                      item={x}
           />
           </li>

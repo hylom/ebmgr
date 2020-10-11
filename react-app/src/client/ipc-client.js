@@ -52,5 +52,12 @@ export default class IpcClient {
         return result;
       });
   }
+
+  setStar(vpath, state) {
+    return this.sendRequest('setStar', [vpath, state])
+      .then(result => {
+        return result;
+      });
+  }
 }
 
