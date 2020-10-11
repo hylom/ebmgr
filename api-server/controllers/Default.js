@@ -3,6 +3,10 @@ const config = require('../../config.json');
 
 const ebmgr = new BookManager(config);
 
+function _getPathParam(req, key) {
+  return req.openapi.pathParams[key];
+}
+
 module.exports.getBooks = function getBooks (req, res, next) {
   ebmgr.getBooks()
     .then(result => {
@@ -11,7 +15,6 @@ module.exports.getBooks = function getBooks (req, res, next) {
       res.end();
     })
     .catch(error => {
-      console.log(error);
       if (error.status) {
         res.status(error.status);
       } else {
@@ -43,5 +46,30 @@ module.exports.getBookThumbnail = function getBookThumbnail (req, res, next, vpa
       res.json(error);
       res.end();
       return;
+    });
+};
+
+module.exports.setStar = function setStar (req, res, next) {
+  const starState = req.body.star;
+  const vpath = _getPathParam(req, 'vpath');
+  if (starState === undefined) {
+    res.status(400);
+    res.json({message: "parameter 'star' not given"});
+    res.end();
+    return;
+  }
+  ebmgr.setStar(vpath, starState ? true : false)
+    .then(result => {
+      res.status(200);
+      res.end();
+    })
+    .catch(error => {
+      if (error.status) {
+        res.status(error.status);
+      } else {
+        res.status(500);
+      }
+      res.json(error);
+      res.end();
     });
 };

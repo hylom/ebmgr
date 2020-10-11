@@ -8,9 +8,19 @@ const gs = require('ghostscript4js');
 const AdmZip = require('adm-zip');
 const sharp = require('sharp');
 
+const Database = require('./json-store');
+
+class InvalidPathError extends Error {
+  constructor(message) {
+    message = message || "invalid vpath";
+    super(message);
+  }
+}
+
 class BookManager {
   constructor(config) {
     this.config = config;
+    this.db = new Database(config);
   }
 
   async getThumbnailPath(realPath) {
@@ -195,41 +205,50 @@ class BookManager {
     return undefined;
   }
 
-  getBooks() {
-    return new Promise((resolve, reject) => {
-      const targetDirs = this.config.contentDirectories;
-      var results = [];
-      for (const dir of targetDirs) {
-        const r = this.searchContents(dir);
-        results = results.concat(r);
-      }
-      resolve(results);
-    });
+  async getBooks() {
+    const targetDirs = this.config.contentDirectories;
+    var results = [];
+    const entries = await this._getAllEntries();
+    for (const dir of targetDirs) {
+      const r = this.searchContents(entries, dir);
+      results = results.concat(r);
+    }
+    return results;
   }
 
-  searchContents(dirname) {
+  async _getAllEntries() {
+    await this.db.open();
+    const entries = this.db.getAllEntries();
+    await this.db.close();
+    return entries;
+  }
+
+  searchContents(entries, dirname) {
     const dirnameHash = this.getHash(dirname);
     const r = [];
-    this._searchContents(dirname, dirnameHash, r);
+    this._searchContents(entries, dirname, dirnameHash, r);
     return r;
   }
 
-  _searchContents(dirname, dirnameHash, results) {
+  _searchContents(entries, dirname, dirnameHash, results) {
     const dir = fs.readdirSync(dirname, {withFileTypes: true});
     const exts = this.config.targetExtentions;
     for (const item of dir) {
       if (item.isDirectory()) {
-        this._searchContents(path.join(dirname, item.name),
+        this._searchContents(entries,
+                             path.join(dirname, item.name),
                              path.join(dirnameHash, item.name),
                              results);
         continue;
       }
       for (const ext of exts) {
         if (item.name.endsWith(ext)) {
-          const metadata = {};
-          metadata.title = path.basename(item.name, ext);
-          metadata.vpath = path.join(dirnameHash, item.name);
-          results.push(metadata);
+          const vpath = path.join(dirnameHash, item.name);
+          const entry = entries[vpath] || {};
+          entry.title = path.basename(item.name, ext);
+          entry.vpath = vpath;
+          
+          results.push(entry);
           continue;
         }
       }
@@ -273,6 +292,23 @@ class BookManager {
     const viewers = this.config.viewers;
     return viewers[ext];
   }
+
+  async setStar(vpath, state) {
+    if (!vpath) {
+      throw new InvalidPathError();
+    }
+    await this.db.open();
+    const entry = await this.db.getEntry(vpath);
+    if (state) {
+      entry.starred = true;
+    } else {
+      delete entry.starred;
+    }
+    await this.db.setEntry(vpath, entry);
+    await this.db.commit();
+    await this.db.close();
+  }
+
 }
 
 module.exports = BookManager;
