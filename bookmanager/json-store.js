@@ -46,7 +46,11 @@ class JsonStore {
     if (!this._loaded) {
       return Promise.reject(new AccessBeforeOpenError());
     }
-    this.metadata.entries[vpath] = Object.assign({}, data);
+    if (!Object.keys(data).length) {
+      delete this.metadata.entries[vpath];
+    } else {
+      this.metadata.entries[vpath] = Object.assign({}, data);
+    }
     this.modified = true;
     return Promise.resolve();
   }
@@ -65,7 +69,7 @@ class JsonStore {
       .catch(error => {
         if (error.code === "ENOENT") {
           this.metadata = this._newMetadata();
-          this.modified = true;
+          this.modified = false;
           this._loaded = true;
           return;
         }

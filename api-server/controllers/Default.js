@@ -7,6 +7,17 @@ function _getPathParam(req, key) {
   return req.openapi.pathParams[key];
 }
 
+function _sendError(error, res) {
+  if (error.status) {
+    res.status(error.status);
+    res.json(error);
+  } else {
+    res.status(500);
+    res.json("" + error);
+  }
+  res.end();
+}
+
 module.exports.getBooks = function getBooks (req, res, next) {
   ebmgr.getBooks()
     .then(result => {
@@ -14,15 +25,7 @@ module.exports.getBooks = function getBooks (req, res, next) {
       res.json(result);
       res.end();
     })
-    .catch(error => {
-      if (error.status) {
-        res.status(error.status);
-      } else {
-        res.status(500);
-      }
-      res.json(error);
-      res.end();
-    });
+    .catch(error => _sendError(error, res));
 };
 
 module.exports.getBookThumbnail = function getBookThumbnail (req, res, next, vpath) {
@@ -37,16 +40,7 @@ module.exports.getBookThumbnail = function getBookThumbnail (req, res, next, vpa
       res.writeHead(200, {'Content-Type': thumb.contentType });
       res.end(thumb.data);
     })
-    .catch(error => {
-      if (error.status) {
-        res.status(error.status);
-      } else {
-        res.status(500);
-      }
-      res.json(error);
-      res.end();
-      return;
-    });
+    .catch(error => _sendError(error, res));
 };
 
 module.exports.setStar = function setStar (req, res, next) {
@@ -63,13 +57,5 @@ module.exports.setStar = function setStar (req, res, next) {
       res.status(200);
       res.end();
     })
-    .catch(error => {
-      if (error.status) {
-        res.status(error.status);
-      } else {
-        res.status(500);
-      }
-      res.json(error);
-      res.end();
-    });
+    .catch(error => _sendError(error, res));
 };
