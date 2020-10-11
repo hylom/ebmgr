@@ -1,0 +1,3 @@
+[submodule "mono-icons"]
+	path = mono-icons
+	url = https://github.com/mono-company/mono-icons
