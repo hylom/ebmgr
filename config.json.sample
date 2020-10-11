@@ -6,5 +6,6 @@
     ".zip": "/Applications/to/viewer",
     ".cbz": "/Applications/to/viewer"
   },
-  "cacheDirectory": "/path/to/cache/directory"
+  "cacheDirectory": "/path/to/cache/directory",
+  "jsonMetadataPath": "/path/to/json/metadata.json"
 }
