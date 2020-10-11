@@ -1,5 +1,8 @@
 import React, {Component} from 'react';
 import './MessageBar.css';
+import circleWarningIcon from './icons/circle-warning.svg';
+import warningIcon from './icons/warning.svg';
+import closeIcon from './icons/close.svg';
 
 class MessageBar extends Component {
   constructor () {
@@ -7,6 +10,7 @@ class MessageBar extends Component {
     this.state = {
       visible: false,
       showLog: false,
+      logLevel: "",
       mesage: "",
     };
   }
@@ -26,6 +30,7 @@ class MessageBar extends Component {
     this.setState({
       message: "loading error",
       visible: true,
+      logLevel: "error",
     });
   }
 
@@ -36,14 +41,34 @@ class MessageBar extends Component {
     }
 
     if (this.state.visible) {
-      return (
-          <div className="MessageBar">
-          <span>{this.state.message}</span>
-          <button onClick={this.showLogInfo.bind(this)}>see log</button>
-          <button onClick={this.dismiss.bind(this)}>dismiss</button>
-          {logInfo}
+      if (this.state.logLevel === 'error') {
+        return (
+            <div className="MessageBar alert-error">
+            <img className="inline-icon" src={warningIcon} alt="info" />
+            <span className="message">{this.state.message}</span>
+            <button onClick={this.showLogInfo.bind(this)}>see log</button>
+            <img onClick={this.dismiss.bind(this)}
+                 className="close-icon"
+                 src={closeIcon}
+                 alt="close"
+                 title="close"
+            />
+            {logInfo}
           </div>
-      );
+        );
+      }
+
+      // fallback
+        return (
+            <div className="MessageBar alert-info">
+            <img className="inline-icon" src={circleWarningIcon} alt="info" />
+            <span className="message">{this.state.message}</span>
+            <button onClick={this.showLogInfo.bind(this)}>see log</button>
+            <img onClick={this.dismiss.bind(this)}
+                 className="icon" src={closeIcon} alt="close" />
+            {logInfo}
+          </div>
+        );
     }
 
     return "";

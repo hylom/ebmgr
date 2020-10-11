@@ -17,3 +17,21 @@ code {
     height: 1.1em;
     vertical-align: text-bottom;
 }
+
+.alert-info {
+    color: #004085;
+    background-color: #cce5ff;
+    border-color: #b8daff;
+}
+
+.alert-error {
+    color: #856404;
+    background-color: #fff3cd;
+    border-color: #ffeeba;
+}
+
+.alert-critical {
+    color: #721c24;
+    background-color: #f8d7da;
+    border-color: #f5c6cb;
+}

@@ -1,16 +1,22 @@
 .MessageBar {
     position: fixed;
-    top: 0;
+    bottom: 0;
     left: 0;
     width: 100%;
-    border: 1px solid lightgray;
+    border: 1px solid;
     box-sizing: border-box;
-    background: white;
-    
+    animation-name: fade-in;
+    animation-duration: 0.3s;
 }
 
-.MessageBar span {
-    margin: 1em;
+@keyframes fade-in {
+    0% { opacity: 0; }
+    100% { opacity: 1; }
+}
+
+.MessageBar span.message {
+    margin-left: 4px;
+    margin-right: 1em;
 }
 
 .MessageBar .log {
@@ -18,4 +24,13 @@
     background: lightyellow;
     margin: 1em;
     padding: 1em;
+}
+
+.MessageBar .close-icon {
+    height: 1.1em;
+    vertical-align: text-bottom;
+    cursor: pointer;
+    float: right;
+    padding: 0 4px;
+    opacity: 0.4;
 }
