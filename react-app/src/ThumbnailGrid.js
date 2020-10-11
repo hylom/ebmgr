@@ -1,5 +1,5 @@
 import React, {Component} from 'react';
-import getClient from './client.js';
+import getClient from './client';
 import './ThumbnailGrid.css';
 import Thumbnail from './Thumbnail';
 import MessageBar from './MessageBar';

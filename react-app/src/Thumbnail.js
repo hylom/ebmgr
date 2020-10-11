@@ -1,6 +1,6 @@
 import React, {Component} from 'react';
 import './Thumbnail.css';
-import getClient from './client.js';
+import getClient from './client';
 import favoriteIcon from './icons/favorite.svg';
 
 class Thumbnail extends Component {
