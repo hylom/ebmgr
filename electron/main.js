@@ -75,7 +75,20 @@ ipcMain.on(channelSend, (event, method, requestId, params) => {
       }
     );
     return;
+  } else if (method == 'setStar') {
+    const vpath = params[0];
+    const state = params[1];
+    ebmgr.setStar(vpath, state).then(
+      result => {
+        event.reply(channelRecv, result);
+      },
+      error => {
+        event.reply(channelRecv, undefined, error);
+      }
+    );
+    return;
   }
+
   event.reply(channelRecv, undefined, { message: "method not found",
                                         name: "InvalidMethodError" });
 });
