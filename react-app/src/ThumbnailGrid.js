@@ -31,11 +31,16 @@ class ThumbnailGrid extends Component {
     }
   }
 
+  toggleFavorite(vpath) {
+    console.log(vpath);
+  }
+
   render() {
     const makeThumb = x => {
       return (
           <li key={x.title}>
           <Thumbnail onLoadThumbnail={this.thumbnailLoaded.bind(this)}
+                     toggleFavorite={this.toggleFavorite.bind(this)}
                      item={x}
           />
           </li>

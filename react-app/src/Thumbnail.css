@@ -1,0 +1,31 @@
+.Thumbnail:hover {
+    background: azure;
+    border: 2px solid burlywood;
+}
+
+.Thumbnail {
+    position: relative;
+}
+
+.Thumbnail img.thumbnail {
+    max-width: 300px;
+    max-height: 300px;
+}
+
+.Thumbnail .thumbnail-header {
+    float: left;
+}
+
+.Thumbnail .thumbnail-footer {
+    background: white;
+    text-align: left;
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    opacity: 0.8;
+}
+
+.non-favorite {
+    opacity: 0.1;
+}

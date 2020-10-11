@@ -12,6 +12,11 @@ code {
     monospace;
 }
 
+.main-bottom {
+    height: 1.5em;
+    clear: both;
+}
+
 .inline-icon {
     display: inline;
     height: 1.1em;

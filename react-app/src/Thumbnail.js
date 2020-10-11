@@ -1,5 +1,7 @@
 import React, {Component} from 'react';
+import './Thumbnail.css';
 import getClient from './client.js';
+import favoriteIcon from './icons/favorite.svg';
 
 class Thumbnail extends Component {
   constructor (props) {
@@ -67,13 +69,28 @@ class Thumbnail extends Component {
     });
   }
 
+  toggleFav() {
+    this.props.toggleFavorite(this.props.item.vpath);
+  }
+
   render() {
     if (this.state.thumbnail) {
       const b64Data = this.state.thumbnail;
+      let header = "";
+      if (this.props.item.starred) {
+        header = <img className="favorite" src={favoriteIcon} title="favorite"
+        onClick={() => this.toggleFav()} />;
+      } else {
+        header = <img className="non-favorite" src={favoriteIcon}
+                      title="favorite"
+        onClick={() => this.toggleFav()} />;
+      }
       return (
           <div className="Thumbnail" ref={this.rootRef}>
+          <div className="thumbnail-header">{header}</div>
           <img className="thumbnail" alt={this.props.item.title} src={b64Data}
                onDoubleClick={() => this.onDoubleClickThumbnail()}/>
+          <div className="thumbnail-footer">{this.props.item.title}</div>
           </div>
       );
     } else {
