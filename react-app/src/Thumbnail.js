@@ -2,6 +2,7 @@ import React, {Component} from 'react';
 import './Thumbnail.css';
 import getClient from './client';
 import favoriteIcon from './icons/favorite.svg';
+import checkIcon from './icons/check.svg';
 
 class Thumbnail extends Component {
   constructor (props) {
@@ -15,6 +16,7 @@ class Thumbnail extends Component {
     this.loadThumbnail = this.loadThumbnail.bind(this);
     this.onDoubleClickThumbnail = this.onDoubleClickThumbnail.bind(this);
     this.toggleFav = this.toggleFav.bind(this);
+    this.toggleCheck = this.toggleCheck.bind(this);
   }
 
   componentDidMount() {
@@ -81,6 +83,12 @@ class Thumbnail extends Component {
                           );
   }
 
+  toggleCheck() {
+    this.props.setCheck(this.props.item.vpath,
+                        this.props.item.checked ? false : true,
+                       );
+  }
+
   render() {
     if (this.state.thumbnail) {
       const b64Data = this.state.thumbnail;
@@ -94,9 +102,18 @@ class Thumbnail extends Component {
                       alt="favorite" title="favorite"
                       onClick={this.toggleFav} />;
       }
+      let header2 = "";
+      if (this.props.item.checked) {
+        header2 = <img className="checked"
+        src={checkIcon} alt="check" title="check" onClick={this.toggleCheck} />;
+      } else {
+        header2 = <img className="non-checked" src={checkIcon}
+        alt="check" title="check"
+        onClick={this.toggleCheck} />;
+      }
       return (
           <div className="Thumbnail" ref={this.rootRef}>
-          <div className="thumbnail-header">{header}</div>
+          <div className="thumbnail-header">{header2} {header}</div>
           <img className="thumbnail" alt={this.props.item.title} src={b64Data}
                onDoubleClick={this.onDoubleClickThumbnail}/>
           <div className="thumbnail-footer">{this.props.item.title}</div>

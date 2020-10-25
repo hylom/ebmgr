@@ -29,3 +29,6 @@
 .non-favorite {
     opacity: 0.1;
 }
+.non-checked {
+    opacity: 0.1;
+}

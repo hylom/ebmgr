@@ -6,3 +6,8 @@
     text-align: center;
 }
 
+.ThumbnailGrid .main-bottom-spacer {
+    height: 1.5em;
+    clear: both;
+}
+

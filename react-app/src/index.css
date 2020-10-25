@@ -12,11 +12,6 @@ code {
     monospace;
 }
 
-.main-bottom {
-    height: 1.5em;
-    clear: both;
-}
-
 .inline-icon {
     display: inline;
     height: 1.1em;
@@ -39,4 +34,17 @@ code {
     color: #721c24;
     background-color: #f8d7da;
     border-color: #f5c6cb;
+}
+
+#root-wrap {
+    display: flex;
+    flex-direction: row;
+}
+
+#root-wrap .Sidebar {
+    flex: 0 1 0px;
+}
+
+#root-wrap .ThumbnailGrid {
+    flex: 1 1;
 }
