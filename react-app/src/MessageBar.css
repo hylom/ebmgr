@@ -27,11 +27,3 @@
     padding: 1em;
 }
 
-.MessageBar .close-icon {
-    height: 1.1em;
-    vertical-align: text-bottom;
-    cursor: pointer;
-    float: right;
-    padding: 0 4px;
-    opacity: 0.4;
-}

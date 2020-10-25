@@ -5,6 +5,7 @@ import Thumbnail from './Thumbnail';
 import MessageBar from './MessageBar';
 import Logger from './logger';
 import Toolbar from './Toolbar';
+import TagEditDialog from './TagEditDialog';
 
 class ThumbnailGrid extends Component {
   constructor () {
@@ -13,6 +14,7 @@ class ThumbnailGrid extends Component {
     this.state = { items: [],
                    loading: true,
                    queryString: "",
+                   scene: "",
                  };
     this.logger = new Logger();
 
@@ -20,6 +22,8 @@ class ThumbnailGrid extends Component {
     this.setCheck = this.setCheck.bind(this);
     this.thumbnailLoaded = this.thumbnailLoaded.bind(this);
     this.executeQuery = this.executeQuery.bind(this);
+    this.closeDialog = this.closeDialog.bind(this);
+    this.editTag = this.editTag.bind(this);
   }
 
   componentDidMount() {
@@ -73,6 +77,14 @@ class ThumbnailGrid extends Component {
     });
   }
 
+  editTag() {
+    this.setState({scene: "editTag"});
+  }
+  
+  closeDialog() {
+    this.setState({scene: ""});
+  }
+
   parseQueryString(query) {
     const s = query.trim();
     if (!s) {
@@ -80,7 +92,7 @@ class ThumbnailGrid extends Component {
     }
 
     // query string is foo:bar form?
-    if (s.indexOf(':') != -1) {
+    if (s.indexOf(':') !== -1) {
       let [key, value] = s.split(':', 2);
       value = value.trim();
       if (value === "false") {
@@ -131,9 +143,15 @@ class ThumbnailGrid extends Component {
       );
     };
     const listItems = targetItems.map(makeThumb);
+    let scene = "";
+    if (this.state.scene === "editTag") {
+      scene = (<TagEditDialog closeHandler={this.closeDialog} />);
+    }
+    
     return (
         <div className="ThumbnailGrid">
-        <Toolbar executeQuery={this.executeQuery}/>
+        {scene}
+        <Toolbar editTag={this.editTag} executeQuery={this.executeQuery} />
         <MessageBar ref={this.messageBar} logger={this.logger}/>
         <ul>{listItems}</ul>
         <div className="main-bottom-spacer"></div>

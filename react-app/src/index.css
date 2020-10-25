@@ -16,6 +16,20 @@ code {
     display: inline;
     height: 1.1em;
     vertical-align: text-bottom;
+    cursor: pointer;
+}
+
+.icon {
+    cursor: pointer;
+}
+
+.close-icon {
+    height: 1.1em;
+    vertical-align: text-bottom;
+    cursor: pointer;
+    float: right;
+    padding: 0 4px;
+    opacity: 0.4;
 }
 
 .alert-info {
@@ -47,4 +61,12 @@ code {
 
 #root-wrap .ThumbnailGrid {
     flex: 1 1;
+}
+
+.float-left {
+    float: left;
+}
+
+.float-right {
+    float: right;
 }

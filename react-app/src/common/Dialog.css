@@ -1,0 +1,38 @@
+.Dialog {
+    width: 400px;
+    position: relative;
+    margin: 0 auto;
+    border: 1px solid;
+    background: white;
+    top: 100px;
+}
+
+.Dialog .header-wrap {
+    height: 1.5em;
+    border-bottom: 1px solid;
+}
+.Dialog .header-wrap .title {
+    padding: 0 8px;
+    font-weight: bold;
+    text-align: center;
+}
+
+.Dialog .content-wrap {
+}
+
+.Dialog .footer-wrap {
+    height: 1.5em;
+    border-top: 1px solid;
+    text-align: right;
+    padding: 0 8px;
+}
+
+
+.modalBase {
+    position: fixed;
+    top: 0;
+    bottom: 0;
+    width: 100%;
+    background: rgba(0, 0, 0, 0.5);
+    z-index: 9999;
+}

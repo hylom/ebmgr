@@ -94,20 +94,20 @@ class Thumbnail extends Component {
       const b64Data = this.state.thumbnail;
       let header = "";
       if (this.props.item.starred) {
-        header = <img className="favorite" src={favoriteIcon}
+        header = <img className="icon favorite" src={favoriteIcon}
                       alt="favorite" title="favorite"
                       onClick={this.toggleFav} />;
       } else {
-        header = <img className="non-favorite" src={favoriteIcon}
+        header = <img className="icon non-favorite" src={favoriteIcon}
                       alt="favorite" title="favorite"
                       onClick={this.toggleFav} />;
       }
       let header2 = "";
       if (this.props.item.checked) {
-        header2 = <img className="checked"
+        header2 = <img className="icon checked"
         src={checkIcon} alt="check" title="check" onClick={this.toggleCheck} />;
       } else {
-        header2 = <img className="non-checked" src={checkIcon}
+        header2 = <img className="icon non-checked" src={checkIcon}
         alt="check" title="check"
         onClick={this.toggleCheck} />;
       }
