@@ -7,6 +7,8 @@ import Logger from './logger';
 import Toolbar from './Toolbar';
 import TagEditDialog from './TagEditDialog';
 
+import {default as qparser} from './qparser';
+
 class ThumbnailGrid extends Component {
   constructor () {
     super();
@@ -112,25 +114,75 @@ class ThumbnailGrid extends Component {
     return {};
   }
 
-  render() {
-    let targetItems = this.state.items;
-    if (this.state.queryString) {
-      const query = this.parseQueryString(this.state.queryString);
+  _applyFilter(query, target) {
+    function filter(query, item) {
       if (query.starred !== undefined) {
         if (query.starred) {
-          targetItems = targetItems.filter(x => x.starred);
+          return item.starred;
         } else {
-          targetItems = targetItems.filter(x => !x.starred);
+          return !item.starred;
         }
       }
       if (query.checked !== undefined) {
         if (query.checked) {
-          targetItems = targetItems.filter(x => x.checked);
+          return item.checked;
         } else {
-          targetItems = targetItems.filter(x => !x.checked);
+          return !item.checked;
         }
       }
+      if (query.CONTAIN) {
+        for (const key in query.CONTAIN) {
+          const val = query.CONTAIN[key];
+          return item[key].indexOf(val) >= 0;
+        }
+        return false;
+      }
+      if (query.PREFIX) {
+        for (const key in query.PREFIX) {
+          const val = query.PREFIX[key];
+          return item[key].indexOf(val) == 0;
+        }
+        return false;
+      }
+      if (query.NOT) {
+        return !filter(query.NOT, item);
+      }
+      if (query.AND) {
+        for (const subQuery of query.AND) {
+          if (!filter(subQuery, item)) {
+            return false;
+          }
+        }
+        return true;
+      }
+      if (query.OR) {
+        for (const subQuery of query.OR) {
+          if (filter(subQuery, item)) {
+            return true;
+          }
+        }
+        return false;
+      }
+      return false;
+    };
+
+    return target.filter(x => filter(query, x));
+  }
+
+  render() {
+    let targetItems = this.state.items;
+    if (this.state.queryString) {
+      //const query = this.parseQueryString(this.state.queryString);
+      let query = {};
+      try {
+        query = qparser.parse(this.state.queryString);
+        console.log(query);
+      } catch (errer) {
+        query = {};
+      }
+      targetItems = this._applyFilter(query, targetItems);
     }
+      
     const makeThumb = x => {
       return (
           <li key={x.title}>
