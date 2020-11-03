@@ -1,0 +1,11 @@
+{
+  "targetExtentions": [ ".pdf", ".zip", ".cbz" ],
+  "contentDirectories" : [ "/Users/hylom/Documents/eBooks" ],
+  "viewers": {
+    "_.pdf": "/Applications/Preview.app",
+    "_.zip": "/Applications/Preview.app",
+    "_.cbz": "/Applications/Preview.app"
+  },
+  "cacheDirectory": "/Users/hylom/Documents/eBooks/cache",
+  "jsonMetadataPath": "/Users/hylom/Documents/eBooks/metadata.json"
+}

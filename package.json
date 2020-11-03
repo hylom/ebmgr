@@ -9,8 +9,11 @@
     "sharp": "^0.25.2"
   },
   "devDependencies": {
+    "chai": "^4.2.0",
+    "chai-as-promised": "^7.1.1",
+    "electron": "^8.2.5",
     "jison": "^0.4.18",
-    "electron": "^8.2.5"
+    "mocha": "^8.2.1"
   },
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
