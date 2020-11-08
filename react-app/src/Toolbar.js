@@ -2,6 +2,8 @@ import React, {Component} from 'react';
 import getClient from './client';
 import './Toolbar.css';
 import tagIcon from './icons/tag.svg';
+import sidebarOpenIcon from './icons/chevron-double-right.svg';
+import sidebarCloseIcon from './icons/chevron-double-left.svg';
 
 class Toolbar extends Component {
   constructor () {
@@ -9,9 +11,11 @@ class Toolbar extends Component {
     this.state = {
       query: "",
       buttons: [],
+      showSidebar: false,
     };
     this.changeQuery = this.changeQuery.bind(this);
     this.executeQuery = this.executeQuery.bind(this);
+    this.toggleSidebar = this.toggleSidebar.bind(this);
 
     this.addIconButton("editTag", {
       src: tagIcon,
@@ -46,6 +50,11 @@ class Toolbar extends Component {
     //  });
   }
 
+  toggleSidebar() {
+    this.setState({showSidebar: !this.state.showSidebar});
+    this.props.toggleSidebar(!this.state.showSidebar);
+  }
+
   render() {
     const buttons = this.state.buttons.map(btn => {
       if (btn.type === "icon") {
@@ -62,8 +71,14 @@ class Toolbar extends Component {
       return "";
     });
 
+    const sidebarIcon = this.state.showSidebar ?
+          <img className="inline-icon float-left" src={sidebarCloseIcon} alt="hide sidebar" title="hide sidebar" onClick={this.toggleSidebar} />
+          : <img className="inline-icon float-left" src={sidebarOpenIcon} alt="open sidebar" title="open sidebar" onClick={this.toggleSidebar} />;
+          
+
     return (
         <div className="Toolbar">
+        {sidebarIcon}
         <form className="float-left" onSubmit={this.executeQuery} >
         <input value={this.state.query} onChange={this.changeQuery} ></input>
         </form>

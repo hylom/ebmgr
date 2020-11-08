@@ -56,7 +56,7 @@ code {
 }
 
 #root-wrap .Sidebar {
-    flex: 0 1 0px;
+    flex: 1 1 fill;
 }
 
 #root-wrap .ThumbnailGrid {

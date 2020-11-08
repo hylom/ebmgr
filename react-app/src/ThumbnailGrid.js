@@ -26,6 +26,7 @@ class ThumbnailGrid extends Component {
     this.executeQuery = this.executeQuery.bind(this);
     this.closeDialog = this.closeDialog.bind(this);
     this.editTag = this.editTag.bind(this);
+    this.toggleSidebar = this.toggleSidebar.bind(this);
   }
 
   componentDidMount() {
@@ -81,6 +82,10 @@ class ThumbnailGrid extends Component {
 
   editTag() {
     this.setState({scene: "editTag"});
+  }
+
+  toggleSidebar(visibility) {
+    this.props.toggleSidebar(visibility);
   }
   
   closeDialog() {
@@ -203,7 +208,8 @@ class ThumbnailGrid extends Component {
     return (
         <div className="ThumbnailGrid">
         {scene}
-        <Toolbar editTag={this.editTag} executeQuery={this.executeQuery} />
+        <Toolbar editTag={this.editTag} executeQuery={this.executeQuery}
+      toggleSidebar={this.toggleSidebar} />
         <MessageBar ref={this.messageBar} logger={this.logger}/>
         <ul>{listItems}</ul>
         <div className="main-bottom-spacer"></div>

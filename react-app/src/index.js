@@ -1,16 +1,12 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 import './index.css';
-import ThumbnailGrid from './ThumbnailGrid';
-import Sidebar from './Sidebar';
+import AppView from './AppView';
 
 ReactDOM.render(
     <React.StrictMode>
-    <div id="root-wrap">
-    <Sidebar />
-    <ThumbnailGrid />
-    </div>
-  </React.StrictMode>,
+    <AppView />
+    </React.StrictMode>,
   document.getElementById('root')
 );
 
