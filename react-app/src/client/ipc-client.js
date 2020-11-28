@@ -47,17 +47,15 @@ export default class IpcClient {
   }
 
   openBook(path) {
-    return this.sendRequest('openBook', path)
-      .then(result => {
-        return result;
-      });
+    return this.sendRequest('openBook', path);
   }
 
   setStar(vpath, state) {
-    return this.sendRequest('setStar', [vpath, state])
-      .then(result => {
-        return result;
-      });
+    return this.sendRequest('setStar', [vpath, state]);
+  }
+
+  getDirectories() {
+    return this.sendRequest('getDirectories');
   }
 }
 

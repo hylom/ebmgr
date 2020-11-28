@@ -1,11 +1,13 @@
-import OaClient from './openapi-client';
+//import OaClient from './openapi-client';
 import IpcClient from './ipc-client';
+import WebClient from './webrpc-client';
 
 export default function getClient() {
   if (isInElectron()) {
     return new IpcClient();
   } else {
-    return new OaClient();
+    //return new OaClient();
+    return new WebClient();
   }
 }
 
