@@ -84,7 +84,7 @@ class BookManager extends BooksMixin(ThumbnailMixin(BookManagerBase)) {
     await this.setEntry(vpath, entry);
   }
 
-  async getDirectoryTree() {
+  async getDirectories() {
     const result = {};
     for (const d of this.config.contentDirectories) {
       const vpath = this._getHash(d);

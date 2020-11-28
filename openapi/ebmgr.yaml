@@ -7,6 +7,18 @@ servers:
 - url: http://localhost:3333/api/v1
   description: Local server
 paths:
+  /directories:
+    get:
+      x-swagger-router-controller: Default
+      description: Returns all directories list
+      operationId: getDirectories
+      responses:
+        "200":
+          description: A list of directories
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DirectoryEntry'
   /books:
     get:
       x-swagger-router-controller: Default
@@ -21,7 +33,7 @@ paths:
                 type: array
                 items:
                   $ref: '#/components/schemas/Book'
-                x-content-type: application/json
+#                x-content-type: application/json
   /books/{vpath}/thumbnail:
     get:
       x-swagger-router-controller: Default
@@ -86,6 +98,14 @@ paths:
           description: succeed
 components:
   schemas:
+    DirectoryEntry:
+      type: object
+      additionalProperties:
+        type: object
+      example:
+        foo:
+          bar: {}
+        baz: {}
     Book:
       type: object
       properties:

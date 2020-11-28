@@ -44,48 +44,42 @@ const channelSend = 'FunctionCall';
 
 ipcMain.on(channelSend, (event, method, requestId, params) => {
   const channelRecv = `${method}_${requestId}`;
+
+  function _call(promise) {
+    promise.then(
+      result => {
+        event.reply(channelRecv, result);
+      },
+      error => {
+        event.reply(channelRecv, undefined, error);
+      });
+  }
+  
   if (method == 'getBooks') {
-    ebmgr.getBooks().then(
-      result => {
-        event.reply(channelRecv, result);
-      },
-      error => {
-        event.reply(channelRecv, undefined, error);
-      }
-    );
+    _call(ebmgr.getBooks());
     return;
-  } else if (method == 'getBookThumbnail') {
-    ebmgr.getBookThumbnail(params).then(
-      result => {
-        event.reply(channelRecv, result);
-      },
-      error => {
-        event.reply(channelRecv, undefined, error);
-      }
-    );
+  }
+
+  if (method == 'getBookThumbnail') {
+    _call(ebmgr.getBookThumbnail(params));
     return;
-  } else if (method == 'openBook') {
+  }
+
+  if (method == 'openBook') {
     const vpath = params;
-    ebmgr.openBook(params).then(
-      result => {
-        event.reply(channelRecv, result);
-      },
-      error => {
-        event.reply(channelRecv, undefined, error);
-      }
-    );
+    _call(ebmgr.openBook(params));
     return;
-  } else if (method == 'setStar') {
+  }
+
+  if (method == 'setStar') {
     const vpath = params[0];
     const state = params[1];
-    ebmgr.setStar(vpath, state).then(
-      result => {
-        event.reply(channelRecv, result);
-      },
-      error => {
-        event.reply(channelRecv, undefined, error);
-      }
-    );
+    _call(ebmgr.setStar(vpath, state));
+    return;
+  }
+
+  if (method == 'getDirectories') {
+    _call(ebmgr.getDirectories());
     return;
   }
 
