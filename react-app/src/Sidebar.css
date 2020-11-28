@@ -4,10 +4,12 @@
 
 .visible .sidebar-contents {
     width: 300px;
+    height: 100%;
 }
 
 .invisible .sidebar-contents {
     width: 0;
+    height: 0;
 }
 
 #sidebarIframe {

@@ -22,7 +22,7 @@ class Sidebar extends Component {
           <div className="Sidebar visible">
           {sidebarHeader}
           <div className="sidebar-contents">
-          <iframe id="sidebarIframe" name="sidebarIframe" src="/sidebar.html"></iframe>
+          <iframe id="sidebarIframe" name="sidebarIframe" src="plugins/sidebar/index.html"></iframe>
           </div>
           </div>
       );
