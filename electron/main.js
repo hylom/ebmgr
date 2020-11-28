@@ -16,6 +16,9 @@ function createWindow () {
   if (process.env.EBM_MODE == 'development') {
     win.loadURL('http://localhost:3000/index.html');
     win.webContents.openDevTools();
+  } else if (process.env.EBM_MODE == 'development-rc') {
+    win.loadFile('./public/index.html');
+    win.webContents.openDevTools();
   } else {
     win.loadFile('./public/index.html');
   }
