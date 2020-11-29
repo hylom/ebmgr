@@ -1,0 +1,25 @@
+.dir-icon {
+    display: inline;
+    height: 1.1em;
+    vertical-align: text-bottom;
+    cursor: pointer;
+    opacity: 0.4;
+    padding-right: 4px;
+}
+
+.icon {
+    cursor: pointer;
+}
+
+.directories ul {
+    list-style: none;
+    padding-left: 0;
+}
+
+.directories ul ul {
+    padding-left: 1em;
+}
+
+.directories li {
+    line-height: 150%;
+}

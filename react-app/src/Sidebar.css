@@ -4,7 +4,7 @@
 
 .visible .sidebar-contents {
     width: 300px;
-    height: 100%;
+    display:block;
 }
 
 .invisible .sidebar-contents {
@@ -13,7 +13,11 @@
 }
 
 #sidebarIframe {
-    width: 100%;
+    position: fixed;
+    width: 300px;
     height: 100%;
     border: 0;
+    left: 0;
+    top: 0;
+    background: rgb(250,250,250);
 }
