@@ -4,6 +4,7 @@ import './Toolbar.css';
 import tagIcon from './icons/tag.svg';
 import sidebarOpenIcon from './icons/chevron-double-right.svg';
 import sidebarCloseIcon from './icons/chevron-double-left.svg';
+import deleteIcon from './icons/close.svg';
 
 class Toolbar extends Component {
   constructor () {
@@ -17,6 +18,7 @@ class Toolbar extends Component {
     this.executeQuery = this.executeQuery.bind(this);
     this.toggleSidebar = this.toggleSidebar.bind(this);
     this.onExecQuery = this.onExecQuery.bind(this);
+    this.clearQuery = this.clearQuery.bind(this);
 
     this.addIconButton("editTag", {
       src: tagIcon,
@@ -46,6 +48,11 @@ class Toolbar extends Component {
     window.removeEventListener('ebmExecQuery', this.onExecQuery);
   }
 
+  clearQuery(event) {
+    this.setState({query: ""});
+    this.props.executeQuery("");
+  }
+  
   executeQuery(event) {
     event.preventDefault();
     this.props.executeQuery(this.state.query);
@@ -96,6 +103,7 @@ class Toolbar extends Component {
         {sidebarIcon}
         <form className="float-left" onSubmit={this.executeQuery} >
         <input value={this.state.query} onChange={this.changeQuery} ></input>
+        <img className="inline-icon" src={deleteIcon} alt="clear query" title="clear query" onClick={this.clearQuery} />
         </form>
         {buttons}
         </div>
