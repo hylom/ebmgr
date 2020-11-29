@@ -40,11 +40,10 @@ class BookManagerBase {
   _vpathToRealPath(vpath) {
     const m = /^([^/]*)(\/.*)$/.exec(vpath);
     if (m) {
-      const hash = m[1];
-      const targetDirs = this.config.contentDirectories;
-      for (const dir of targetDirs) {
-        if (this._getHash(dir) == hash) {
-          return path.join(dir, m[2]);
+      const alias = m[1];
+      for (const dir in this.config.contentDirectory) {
+        if (dir == alias) {
+          return path.join(this.config.contentDirectory[dir], m[2]);
         }
       }
     }

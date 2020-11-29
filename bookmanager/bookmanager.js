@@ -54,7 +54,8 @@ class BookManager extends BooksMixin(ThumbnailMixin(BookManagerBase)) {
   }
 
   getRootDirectories() {
-    return this.config.contentDirectories.map(d => this._getHash(d));
+    //return this.config.contentDirectories.map(d => this._getHash(d));
+    return this.config.contentDirectory.keys();
   }
 
   async getEntry(vpath) {
@@ -86,8 +87,8 @@ class BookManager extends BooksMixin(ThumbnailMixin(BookManagerBase)) {
 
   async getDirectories() {
     const result = {};
-    for (const d of this.config.contentDirectories) {
-      const vpath = this._getHash(d);
+    for (const vpath in this.config.contentDirectory) {
+      const d = this.config.contentDirectory[vpath];
       const dirs = await this._getSubDirectories(d);
       result[vpath] = dirs;
     }

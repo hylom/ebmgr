@@ -3,11 +3,10 @@ const path = require('path');
 
 const BooksMixin = Base => class extends Base {
   async getBooks() {
-    const targetDirs = this.config.contentDirectories;
     var results = [];
     const entries = await this._getAllEntries();
-    for (const dir of targetDirs) {
-      const r = this._searchContents(entries, dir);
+    for (const aliase in this.config.contentDirectory) {
+      const r = this._searchContents(entries, aliase);
       results = results.concat(r);
     }
     return results;
@@ -20,27 +19,27 @@ const BooksMixin = Base => class extends Base {
     return entries;
   }
 
-  _searchContents(entries, dirname) {
-    const dirnameHash = this._getHash(dirname);
+  _searchContents(entries, aliase) {
+    const dirName = this.config.contentDirectory[aliase];
     const r = [];
-    this._searchContentsRecur(entries, dirname, dirnameHash, r);
+    this._searchContentsRecur(entries, dirName, aliase, r);
     return r;
   }
 
-  _searchContentsRecur(entries, dirname, dirnameHash, results) {
-    const dir = fs.readdirSync(dirname, {withFileTypes: true});
+  _searchContentsRecur(entries, dirName, aliase, results) {
+    const dir = fs.readdirSync(dirName, {withFileTypes: true});
     const exts = this.config.targetExtentions;
     for (const item of dir) {
       if (item.isDirectory()) {
         this._searchContentsRecur(entries,
-                             path.join(dirname, item.name),
-                             path.join(dirnameHash, item.name),
+                             path.join(dirName, item.name),
+                             path.join(aliase, item.name),
                              results);
         continue;
       }
       for (const ext of exts) {
         if (item.name.endsWith(ext)) {
-          const vpath = path.join(dirnameHash, item.name);
+          const vpath = path.join(aliase, item.name);
           const entry = entries[vpath] || {};
           entry.title = path.basename(item.name, ext);
           entry.vpath = vpath;
