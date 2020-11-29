@@ -5,7 +5,9 @@ export default class WebClient {
   _fetch(url, param) {
     param = param || {};
     return fetch(url, param).then(resp => {
-      if (resp.ok) { return resp; }
+      if (resp.ok) {
+        return resp;
+      }
       return resp.text().then(text => { throw text; });
     });
   }
@@ -20,7 +22,7 @@ export default class WebClient {
     const headers = new Headers();
     const json = JSON.stringify(body);
     headers.append('Content-Type', 'application/json');
-    return this._fetch(url, { method: "POST",
+    return this._fetch(url, { method: "PUT",
                               headers: headers,
                               body: json
                             });
@@ -49,8 +51,7 @@ export default class WebClient {
   setStar(vpath, state) {
     vpath = encodeURIComponent(vpath);
     const reqPath = `/books/${vpath}/star`;
-    return this._put(reqPath, {star: state})
-      .then(resp => resp.json());
+    return this._put(reqPath, {star: state});
   }
 
   getDirectories() {
