@@ -52,21 +52,20 @@ class ThumbnailGrid extends Component {
   setFavorite(vpath, val) {
     const client = getClient();
     client.setStar(vpath, val)
-      .then(
-        () => {
-          this.setState((state, props) => {
-            const item = state.items.find(x => x.vpath === vpath);
-            if (item) {
-              item.starred = val;
-              return {items: state.items};
-            }
-            return {};
-          });
-        })
-      .catch(
-        err => {
-          // error handling
+      .then(() => {
+        this.setState((state, props) => {
+          const item = state.items.find(x => x.vpath === vpath);
+          if (item) {
+            item.starred = val;
+            return {items: state.items};
+          }
+          return {};
         });
+      })
+      .catch(err => {
+        // error handling
+        console.log(`error: ${err}`);
+      });
   }
 
   setCheck(vpath, val) {
@@ -181,7 +180,7 @@ class ThumbnailGrid extends Component {
       let query = {};
       try {
         query = qparser.parse(this.state.queryString);
-        console.log(query);
+        //console.log(query);
       } catch (errer) {
         query = {};
       }

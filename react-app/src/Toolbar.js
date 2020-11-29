@@ -16,19 +16,34 @@ class Toolbar extends Component {
     this.changeQuery = this.changeQuery.bind(this);
     this.executeQuery = this.executeQuery.bind(this);
     this.toggleSidebar = this.toggleSidebar.bind(this);
+    this.onExecQuery = this.onExecQuery.bind(this);
 
     this.addIconButton("editTag", {
       src: tagIcon,
       alt: "edit tag",
       title: "edit tag",
     }, this.editTag.bind(this));
+
   }
 
   editTag() {
     this.props.editTag();
   }
 
+  onExecQuery(event) {
+    //console.log(event.detail.query);
+    if (event.detail && event.detail.query) {
+      this.setState({query: event.detail.query});
+      this.props.executeQuery(event.detail.query);
+    }
+  }
+
   componentDidMount() {
+    window.addEventListener('ebmExecQuery', this.onExecQuery);
+  }
+
+  componentWillUnmount() {
+    window.removeEventListener('ebmExecQuery', this.onExecQuery);
   }
 
   executeQuery(event) {
