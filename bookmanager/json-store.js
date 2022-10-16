@@ -1,3 +1,4 @@
+const path = require('path');
 const fsPromises = require('fs').promises;
 
 const METADATA_INIT = {
@@ -14,6 +15,7 @@ class AccessBeforeOpenError extends Error {
 
 class JsonStore {
   constructor(config) {
+    this._metadataName = 'metadata.json';
     this.config = config;
     this.metadata = null;
     this.modified = false;
@@ -25,7 +27,8 @@ class JsonStore {
   }
 
   _jsonPath() {
-    return this.config.jsonMetadataPath;
+    //return this.config.jsonMetadataPath;
+    return path.join(this.config.cacheDirectory, this._metadataName);
   }
 
   getAllEntries() {
@@ -39,7 +42,7 @@ class JsonStore {
     if (!this._loaded) {
       return Promise.reject(new AccessBeforeOpenError());
     }
-    return Promise.resolve(this.metadata.entries[vpath] || {});
+    return Promise.resolve(this.metadata.entries[vpath] || null);
   }
 
   setEntry(vpath, data) {

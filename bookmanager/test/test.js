@@ -9,14 +9,14 @@ const fs = require('fs');
 
 const config = {
   "targetExtentions": [ ".pdf", ".zip", ".cbz" ],
-  "contentDirectories" : [ path.join(__dirname, "data"), ],
+  "contentDirectory" : { "main": path.join(__dirname, "data"), },
   "viewers": {
     "_.pdf": "/Applications/Preview.app",
     "_.zip": "/Applications/Preview.app",
     "_.cbz": "/Applications/Preview.app"
   },
-  "cacheDirectory": path.join(__dirname, "cache"),
-  "jsonMetadataPath": path.join(__dirname, "data", "metadata.json"),
+  "cacheDirectory": path.join(__dirname, "tmp", "cache")
+  //"jsonMetadataPath": path.join(__dirname, "tmp", "data", "metadata.json"),
 };
 
 const bm = new BookManager(config);
@@ -26,7 +26,7 @@ describe('BookManager', function () {
   describe('pre-condition check', function () {
     describe('test data directory', function () {
       it('can open', function () {
-        return fs.promises.opendir(config.contentDirectories[0])
+        return fs.promises.opendir(config.contentDirectory.main)
           .should.be.fulfilled
           .then(fp => { fp.close(); });
       });
@@ -35,7 +35,16 @@ describe('BookManager', function () {
   
   describe('#getBooks', function () {
     it('should be fulfillled', function () {
-      return bm.getBooks().should.be.fulfilled;
+      const expect = [
+        { title: 'test_jpg',
+          vpath: 'main/sub_dir/test_jpg.zip' },
+        { title: 'test_pdf',
+          vpath: 'main/test_pdf.pdf' },
+        { title: 'test_png',
+          vpath: 'main/test_png.zip' },
+      ];
+      //return bm.getBooks().should.be.fulfilled;
+      return bm.getBooks().should.eventually.to.deep.equal(expect);
     });
   });
 
@@ -45,12 +54,12 @@ describe('BookManager', function () {
     });
   });
 
-  describe('#getDirectoryTree', function () {
+  describe('#getDirectories', function () {
     it('should return valid value', function () {
       const d = bm.getRootDirectories();
       const expect = {};
       expect[d[0]] = { sub_dir: { sub_sub_dir: {} }, sub_dir2: {} };
-      return bm.getDirectoryTree().should.eventually.to.deep.equal(expect);
+      return bm.getDirectories().should.eventually.to.deep.equal(expect);
     });
   });
 
@@ -72,6 +81,15 @@ describe('BookManager', function () {
       const d = bm.getRootDirectories();
       const target = d[0] + "/sub_dir/test_jpg.zip";
       return bm.getBookThumbnail(target).should.be.fulfilled;
+    });
+  });
+
+  describe('#getBook', function () {
+    it('should be fulfillled', function () {
+      const d = bm.getRootDirectories();
+      const target = d[0] + "/sub_dir/test_jpg.zip";
+      return bm.db.getEntry(target)
+        .should.eventually.have.property("starred");
     });
   });
 

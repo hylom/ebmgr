@@ -8,9 +8,24 @@ const Database = require('./json-store');
 class BookManagerBase {
   constructor(config) {
     this.config = config;
+    this._ensureCacheDirectory();
     this.db = new Database(config);
   }
 
+  _ensureCacheDirectory() {
+    const st = fs.lstatSync(this.config.cacheDirectory, { throwIfNoEntry: false });
+    if (!st) {
+      // directory not found, so create it
+      fs.mkdirSync(this.config.cacheDirectory, { recursive: true });
+      return;
+    }
+    if (st.isDirectory()) {
+      return;
+    }
+    // cache directory is invalid
+    throw Error(`invalid cache directory: ${this.config.cacheDirectory}`);
+  }
+  
   _getHash(target, algo) {
     algo = algo || 'md5';
     const hash = crypto.createHash(algo);

@@ -55,7 +55,7 @@ class BookManager extends BooksMixin(ThumbnailMixin(BookManagerBase)) {
 
   getRootDirectories() {
     //return this.config.contentDirectories.map(d => this._getHash(d));
-    return this.config.contentDirectory.keys();
+    return Object.keys(this.config.contentDirectory);
   }
 
   async getEntry(vpath) {

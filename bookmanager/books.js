@@ -12,6 +12,17 @@ const BooksMixin = Base => class extends Base {
     return results;
   }
 
+  async getBook(vpath) {
+    const realPath = this._vpathToRealPath(vpath);
+    if (!realPath) {
+      return Promise.reject({ status: 404,
+                              message: `invalid vpath: ${vpath}`
+                            });
+    }
+    const entry = await this.db.getEntry(vpath);
+    return entry;
+  }
+
   async _getAllEntries() {
     await this.db.open();
     const entries = this.db.getAllEntries();
@@ -26,20 +37,26 @@ const BooksMixin = Base => class extends Base {
     return r;
   }
 
+  // vpath must use '/' as separator if on Window environment
+  //const vpath = path.join(aliase, item.name);
+  _joinPath(p1, p2) {
+    return p1 + '/' + p2;
+  }
+  
   _searchContentsRecur(entries, dirName, aliase, results) {
     const dir = fs.readdirSync(dirName, {withFileTypes: true});
     const exts = this.config.targetExtentions;
     for (const item of dir) {
       if (item.isDirectory()) {
         this._searchContentsRecur(entries,
-                             path.join(dirName, item.name),
-                             path.join(aliase, item.name),
-                             results);
+                                  this._joinPath(dirName, item.name),
+                                  this._joinPath(aliase, item.name),
+                                  results);
         continue;
       }
       for (const ext of exts) {
         if (item.name.endsWith(ext)) {
-          const vpath = path.join(aliase, item.name);
+          const vpath = this._joinPath(aliase, item.name);
           const entry = entries[vpath] || {};
           entry.title = path.basename(item.name, ext);
           entry.vpath = vpath;

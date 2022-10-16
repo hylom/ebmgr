@@ -51,7 +51,7 @@ const ThumbnailMixin = Base => class extends Base {
     // check given path
     const realPath = this._vpathToRealPath(vpath);
     if (!realPath) {
-      return Promise.reject({ status: 400,
+      return Promise.reject({ status: 404,
                               message: `invalid vpath: ${vpath}`
                             });
     }
