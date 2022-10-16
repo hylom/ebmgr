@@ -6,7 +6,7 @@
   "dependencies": {
     "adm-zip": "^0.4.14",
     "ghostscript4js": "^3.2.1",
-    "sharp": "^0.25.2"
+    "sharp": "^0.25.4"
   },
   "devDependencies": {
     "chai": "^4.2.0",
@@ -16,7 +16,8 @@
     "mocha": "^8.2.1"
   },
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "cd bookmanager && npx mocha",
+    "start": "electron electron/main.js"
   },
   "author": "",
   "license": "ISC"

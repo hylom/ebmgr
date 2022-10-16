@@ -4,7 +4,8 @@ const config = require('../../config.json');
 const ebmgr = new BookManager(config);
 
 function _getPathParam(req, key) {
-  return req.openapi.pathParams[key];
+  return req.params.vpath;
+  //return req.openapi.pathParams[key];
 }
 
 function _sendError(error, res) {
@@ -19,6 +20,7 @@ function _sendError(error, res) {
 }
 
 module.exports.getBooks = function getBooks(req, res, next) {
+  console.log("getBooks");
   ebmgr.getBooks()
     .then(result => {
       res.status(200);
@@ -28,12 +30,32 @@ module.exports.getBooks = function getBooks(req, res, next) {
     .catch(error => _sendError(error, res));
 };
 
-module.exports.getBookThumbnail = function getBookThumbnail(req, res, next, vpath) {
+module.exports.getBook = function getBook(req, res, next) {
+  console.log("getBook");
+  const vpath = _getPathParam(req, 'vpath');
+  ebmgr.getBook(vpath)
+    .then(result => {
+      if (!result) {
+        res.status(404).json({ error: 'not_found' });
+        res.end();
+        return;
+      }
+      res.status(200);
+      res.json(result);
+      res.end();
+    })
+    .catch(error => _sendError(error, res));
+};
+
+module.exports.getBookThumbnail = function getBookThumbnail(req, res, next) {
+  console.log("getBookThumbnail");
+  const vpath = _getPathParam(req, 'vpath');
   ebmgr.getBookThumbnail(vpath)
     .then(thumb => {
       if (!thumb) {
         // resource not found
-        res.writeHead(404);
+        //res.writeHead(404);
+        res.status(404).json({ error: 'not_found' });
         res.end();
         return;
       }

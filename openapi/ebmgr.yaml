@@ -34,6 +34,33 @@ paths:
                 items:
                   $ref: '#/components/schemas/Book'
 #                x-content-type: application/json
+  /books/{vpath}:
+    get:
+      x-swagger-router-controller: Default
+      description: Returns a book information
+      operationId: getBook
+      parameters:
+        - in: path
+          name: vpath
+          schema:
+            type: string
+          required: true
+          description: virtual path of the book
+      responses:
+        "404":
+          description: A book with the given vpath was not found
+        "403":
+          description: A book exists but cannot get information
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        "200":
+          description: book information
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Book'
   /books/{vpath}/thumbnail:
     get:
       x-swagger-router-controller: Default
