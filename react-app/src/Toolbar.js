@@ -1,10 +1,10 @@
 import React, {Component} from 'react';
 import getClient from './client';
 import './Toolbar.css';
-import tagIcon from './icons/tag.svg';
-import sidebarOpenIcon from './icons/chevron-double-right.svg';
-import sidebarCloseIcon from './icons/chevron-double-left.svg';
-import deleteIcon from './icons/close.svg';
+import tagIcon from './mono-icons/svg/tag.svg';
+import sidebarOpenIcon from './mono-icons/svg/chevron-double-right.svg';
+import sidebarCloseIcon from './mono-icons/svg/chevron-double-left.svg';
+import deleteIcon from './mono-icons/svg/close.svg';
 
 class Toolbar extends Component {
   constructor () {

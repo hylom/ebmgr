@@ -1,8 +1,8 @@
 import React, {Component} from 'react';
 import './Thumbnail.css';
 import getClient from './client';
-import favoriteIcon from './icons/favorite.svg';
-import checkIcon from './icons/check.svg';
+import favoriteIcon from './mono-icons/svg/favorite.svg';
+import checkIcon from './mono-icons/svg/check.svg';
 
 class Thumbnail extends Component {
   constructor (props) {

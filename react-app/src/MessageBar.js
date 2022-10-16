@@ -1,8 +1,8 @@
 import React, {Component} from 'react';
 import './MessageBar.css';
-import circleWarningIcon from './icons/circle-warning.svg';
-import warningIcon from './icons/warning.svg';
-import closeIcon from './icons/close.svg';
+import circleWarningIcon from './mono-icons/svg/circle-warning.svg';
+import warningIcon from './mono-icons/svg/warning.svg';
+import closeIcon from './mono-icons/svg/close.svg';
 
 class MessageBar extends Component {
   constructor () {

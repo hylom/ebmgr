@@ -1,7 +1,7 @@
 import React, {Component} from 'react';
 import getClient from './client';
 import './Sidebar.css';
-import directoryIcon from './icons/folder.svg';
+import directoryIcon from './mono-icons/svg/folder.svg';
 
 class Sidebar extends Component {
   constructor () {

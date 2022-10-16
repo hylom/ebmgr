@@ -1,7 +1,8 @@
+
 import React, {Component} from 'react';
 //import getClient from './client';
 import './Dialog.css';
-import closeIcon from '../icons/close.svg';
+import closeIcon from '../mono-icons/svg/close.svg';
 
 class Dialog extends Component {
   static BUTTON_CLOSE  = 0b1;
