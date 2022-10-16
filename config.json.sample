@@ -1,11 +1,10 @@
 {
   "targetExtentions": [ ".pdf", ".zip", ".cbz" ],
-  "contentDirectories" : [ "/path/to/contents/directory" ]
+  "contentDirectory" : { "alias-name": "/path/to/contents/directory" },
   "viewers": {
     ".pdf": "/Applications/Preview.app",
     ".zip": "/Applications/to/viewer",
     ".cbz": "/Applications/to/viewer"
   },
-  "cacheDirectory": "/path/to/cache/directory",
-  "jsonMetadataPath": "/path/to/json/metadata.json"
+  "cacheDirectory": "/path/to/cache/directory"
 }
