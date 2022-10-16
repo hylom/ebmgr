@@ -1,3 +1,3 @@
 [submodule "mono-icons"]
-	path = mono-icons
+	path = react-app/src/mono-icons
 	url = https://github.com/mono-company/mono-icons
