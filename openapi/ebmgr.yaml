@@ -89,6 +89,40 @@ paths:
               schema:
                 type: string
                 format: binary
+  /books/{vpath}/pages/{page}:
+    get:
+      x-swagger-router-controller: Default
+      description: Returns the image corresponding to the page
+      operationId: getPageImage
+      parameters:
+        - in: path
+          name: vpath
+          schema:
+            type: string
+          required: true
+          description: virtual path of the book
+        - in: path
+          name: page
+          schema:
+            type: number
+          required: true
+          description: number of the page
+      responses:
+        "404":
+          description: A book or page with the given vpath and page was not found
+        "403":
+          description: A book exists but cannot get page image
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        "200":
+          description: An image of the page
+          content:
+            image/jpeg:
+              schema:
+                type: string
+                format: binary
   /books/{vpath}/star:
     put:
       x-swagger-router-controller: Default
@@ -138,15 +172,26 @@ components:
       properties:
         title:
           type: string
-          description: title of book
+          description: title of the book
           example: some interesting title
         vpath:
           type: string
-          description: virtualized path of book
-          example: /foo/bar/baz
+          description: virtualized path of the book
+          example: foo/bar/baz
+        pages:
+          type: number
+          description: total pages of the book
+          example: 12
+        starred:
+          type: boolean
+          description: true if the book has star
+          example: true
+      required: [ title, vpath, pages ]
       example:
         title: some interesting title
-        path: /foo/bar/baz
+        vpath: foo/bar/baz
+        pages: 12
+        starred: true
     Error:
       type: object
       properties:
