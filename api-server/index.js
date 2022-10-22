@@ -5,6 +5,7 @@ const express = require('express');
 const { createProxyMiddleware } = require('http-proxy-middleware');
 const operations = require('./controllers/Default.js');
 const OpenApiValidator = require('express-openapi-validator');
+const { initialize } = require('express-openapi');
 
 const serverPort = 3333;
 
@@ -24,7 +25,20 @@ app.use(morgan('combined'));
 //   }),
 // );
 
-const routes = {
+initialize({
+  app,
+  apiDoc: apiSpec,
+  operations,
+  logger: console,
+  errorMiddleware: (err, req, res, _next) => {
+    console.log(`error: ${err}`);
+    _next();
+  },
+});
+
+/*
+
+  const routes = {
   get: {
     books: operations.getBooks,
     'books/:vpath': operations.getBook,
@@ -36,9 +50,7 @@ const routes = {
 };
 
 const apiRoot = '/api/v1/';
-
 console.log(operations);
-
 for (const p in routes.get) {
   console.log(`add GET ${apiRoot + p}`);
   app.get(apiRoot + p, routes.get[p]);
@@ -47,6 +59,7 @@ for (const p in routes.get) {
 for (const p in routes.put) {
   app.put(apiRoot + p, routes.put[p]);
 }
+*/
 
 if (mode == 'development') {
   // add routes for React
