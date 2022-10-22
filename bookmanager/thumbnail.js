@@ -6,7 +6,7 @@ const AdmZip = require('adm-zip');
 const sharp = require('sharp');
 
 
-const ThumbnailMixin = Base => class extends Base {
+const thumbnailMixinBuilder = Base => class extends Base {
   async _getThumbnailPath(realPath) {
     const cacheDir = this.config.cacheDirectory;
     if (!cacheDir) {
@@ -149,4 +149,4 @@ const ThumbnailMixin = Base => class extends Base {
   }
 };
 
-module.exports = ThumbnailMixin;
+module.exports.thumbnailMixinBuilder = thumbnailMixinBuilder;

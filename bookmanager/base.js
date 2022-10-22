@@ -3,7 +3,8 @@ const path = require('path');
 const os = require('os');
 const fs = require('fs');
 
-const Database = require('./json-store');
+//const Database = require('./json-store');
+const Database = require('./database');
 
 class BookManagerBase {
   constructor(config) {
@@ -66,4 +67,4 @@ class BookManagerBase {
   }
 }
 
-module.exports = BookManagerBase;
+module.exports.BookManagerBase = BookManagerBase;

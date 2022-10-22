@@ -31,21 +31,21 @@ class JsonStore {
     return path.join(this.config.cacheDirectory, this._metadataName);
   }
 
-  getAllEntries() {
+  async getAllEntries() {
     if (!this._loaded) {
       return Promise.reject(new AccessBeforeOpenError());
     }
     return Object.assign({}, this.metadata.entries);
   }
 
-  getEntry(vpath) {
+  async getEntry(vpath) {
     if (!this._loaded) {
       return Promise.reject(new AccessBeforeOpenError());
     }
     return Promise.resolve(this.metadata.entries[vpath] || null);
   }
 
-  setEntry(vpath, data) {
+  async setEntry(vpath, data) {
     if (!this._loaded) {
       return Promise.reject(new AccessBeforeOpenError());
     }
@@ -58,7 +58,7 @@ class JsonStore {
     return Promise.resolve();
   }
 
-  open() {
+  async open() {
     if (this._loaded) {
       return Promise.resolve();
     }
@@ -80,7 +80,7 @@ class JsonStore {
       });
   }
 
-  commit() {
+  async commit() {
     if (!this.modified) {
       return Promise.resolve();
     }
@@ -88,17 +88,22 @@ class JsonStore {
       writeFile(this._jsonPath(),
                 JSON.stringify(this.metadata),
                 {encoding: "utf8"})
-      .then(() => { this.modified = false; });
+      .then(() => { this.modified = false; })
+      .catch(err => {
+        //console.log(err);
+        //console.log(this._jsonPath());
+        throw err;
+      });
   }
 
-  rollback() {
+  async rollback() {
     if (!this.modified) {
       return Promise.resolve();
     }
     return this.open();
   }
 
-  close() {
+  async close() {
     if (this.modified) {
       return Promise.reject(new Error("metadata modified but not commited"));
     }

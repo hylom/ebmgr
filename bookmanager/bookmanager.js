@@ -1,11 +1,17 @@
-const path = require('path');
-const os = require('os');
-const child_process = require('child_process');
-const fs = require('fs');
+const { BookManagerBase } = require('./base');
+const { booksMixinBuilder } = require('./books');
+const { thumbnailMixinBuilder } = require('./thumbnail');
+const { openBookMixinBuilder } = require('./open-book');
+const { directoriesMixinBuilder } = require('./directories');
+const { entriesMixinBuilder } = require('./entries');
 
-const BookManagerBase = require('./base');
-const BooksMixin = require('./books');
-const ThumbnailMixin = require('./thumbnail');
+const builders = [
+  booksMixinBuilder,
+  thumbnailMixinBuilder,
+  openBookMixinBuilder,
+  directoriesMixinBuilder,
+  entriesMixinBuilder,
+];
 
 class InvalidPathError extends Error {
   constructor(message) {
@@ -14,99 +20,14 @@ class InvalidPathError extends Error {
   }
 }
 
-class BookManager extends BooksMixin(ThumbnailMixin(BookManagerBase)) {
-  openBook(vpath) {
-    // check given path
-    const realPath = this._vpathToRealPath(vpath);
-    if (!realPath) {
-      return Promise.reject({
-        status: 404,
-        message: `cannot open book: ${realPath}`
-      });
-    }
-
-    const openCmd = '/usr/bin/open';
-    const args = [ realPath ];
-    const opts = {};
-    const viewer = this._getViewer(vpath);
-
-    if (viewer && viewer.length) {
-      args.push('-a');
-      args.push(viewer);
-    }
-
-    return new Promise((resolve, reject) => {
-      child_process.execFile(openCmd, args, opts,
-                             (error, stdout, stderr) => {
-                               if (error) {
-                                 reject(error);
-                                 return;
-                               }
-                               resolve();
-                             });
-    });
+function applyMixins(mixinBuilders, base) {
+  let result = base;
+  for (const builder of mixinBuilders) {
+    result = builder(result);
   }
-
-  _getViewer(vpath) {
-    const ext = path.extname(vpath).toLowerCase();
-    const viewers = this.config.viewers;
-    return viewers[ext];
-  }
-
-  getRootDirectories() {
-    //return this.config.contentDirectories.map(d => this._getHash(d));
-    return Object.keys(this.config.contentDirectory);
-  }
-
-  async getEntry(vpath) {
-    await this.db.open();
-    const entry = this.db.getEntry(vpath);
-    await this.db.close();
-    return entry;
-  }
-
-  async setEntry(vpath, entry) {
-    await this.db.open();
-    await this.db.setEntry(vpath, entry);
-    await this.db.commit();
-    await this.db.close();
-  }
-
-  async setStar(vpath, state) {
-    if (!vpath) {
-      throw new InvalidPathError();
-    }
-    const entry = await this.getEntry(vpath);
-    if (state) {
-      entry.starred = true;
-    } else {
-      delete entry.starred;
-    }
-    await this.setEntry(vpath, entry);
-  }
-
-  async getDirectories() {
-    const result = {};
-    for (const vpath in this.config.contentDirectory) {
-      const d = this.config.contentDirectory[vpath];
-      const dirs = await this._getSubDirectories(d);
-      result[vpath] = dirs;
-    }
-    return result;
-  }
-
-  async _getSubDirectories(dir) {
-    const items = await fs.promises.opendir(dir);
-    const result = {};
-    for await (const dirent of items) {
-      if (dirent.isDirectory()) {
-        const name = dirent.name;
-        result[name] = await this._getSubDirectories(path.join(dir, name));
-      }
-    }
-    return result;
-  }
-  
+  return result;
 }
+
+class BookManager extends applyMixins(builders, BookManagerBase) {}
 
 module.exports = BookManager;

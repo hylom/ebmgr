@@ -1,5 +1,5 @@
-const chai = require("chai");
-chai.use(require("chai-as-promised"));
+const chai = require('chai');
+chai.use(require('chai-as-promised'));
 chai.should();
 const assert = require('assert');
 
@@ -19,9 +19,13 @@ const config = {
   //"jsonMetadataPath": path.join(__dirname, "tmp", "data", "metadata.json"),
 };
 
-const bm = new BookManager(config);
+
+// clean up for test
+fs.rmSync(config.cacheDirectory,
+          { recursive: true, force: true });
 
 describe('BookManager', function () {
+  const bm = new BookManager(config);
 
   describe('pre-condition check', function () {
     describe('test data directory', function () {
@@ -35,7 +39,7 @@ describe('BookManager', function () {
   
   describe('#getBooks', function () {
     it('should be fulfillled', function () {
-      const expect = [
+      const expects = [
         { title: 'test_jpg',
           vpath: 'main/sub_dir/test_jpg.zip' },
         { title: 'test_pdf',
@@ -44,13 +48,25 @@ describe('BookManager', function () {
           vpath: 'main/test_png.zip' },
       ];
       //return bm.getBooks().should.be.fulfilled;
-      return bm.getBooks().should.eventually.to.deep.equal(expect);
+      return bm.getBooks().should.eventually.to.have.lengthOf(3)
+        .and.satisfy(books => {
+          for (const v of expects) {
+            const r = books.find(b => (b.title == v.title));
+            if (!r || r.vpath != v.vpath) {
+              return false;
+            }
+          }
+          return true;
+        }, 'result is not expected');
     });
   });
 
   describe('#getRootDirectories', function () {
     it('should return one directory', function () {
-      assert.equal(bm.getRootDirectories().length, 1);
+      const d = bm.getRootDirectories();
+      d.should.be.an('array');
+      d.should.have.lengthOf(1);
+      d.should.have.members(['main']);
     });
   });
 
@@ -66,30 +82,54 @@ describe('BookManager', function () {
   describe('#setStar', function () {
     it('should be fulfilled', function () {
       const d = bm.getRootDirectories();
-      const target = d[0] + "/sub_dir/test_jpg.zip";
+      const target = d[0] + '/sub_dir/test_jpg.zip';
       return bm.setStar(target, true).should.be.fulfilled;
     });
     it('should be succeeded to set star', function () {
       const d = bm.getRootDirectories();
-      const target = d[0] + "/sub_dir/test_jpg.zip";
-      return bm.db.getEntry(target).should.eventually.have.property("starred").to.be.true;
+      const target = d[0] + '/sub_dir/test_jpg.zip';
+      return bm.getEntry(target).should.eventually.have.property('starred').to.be.true;
     });
   });
 
   describe('#getBookThumbnail', function () {
     it('should return thumbnail', function () {
       const d = bm.getRootDirectories();
-      const target = d[0] + "/sub_dir/test_jpg.zip";
+      const target = d[0] + '/sub_dir/test_jpg.zip';
       return bm.getBookThumbnail(target).should.be.fulfilled;
     });
   });
 
   describe('#getBook', function () {
-    it('should be fulfillled', function () {
+    it('should be fulfillled (1)', function () {
       const d = bm.getRootDirectories();
-      const target = d[0] + "/sub_dir/test_jpg.zip";
-      return bm.db.getEntry(target)
-        .should.eventually.have.property("starred");
+      const target = d[0] + '/sub_dir/test_jpg.zip';
+      return bm.getEntry(target)
+        .should.eventually.have.property('starred');
+    });
+
+    it('should be fulfillled (2)', function () {
+      const d = bm.getRootDirectories();
+      const target = d[0] + '/test_png.zip';
+      const result = bm.getEntry(target);
+
+      return Promise.all([
+        result.should.eventually.have.property('pages', 4),
+        result.should.eventually.have.property('type', 'zip'),
+        result.should.eventually.have.property('title', 'test_png'),
+      ]);
+    });
+  });
+
+  describe('#getPage', function () {
+    it('should be fulfillled (1)', function () {
+      const d = bm.getRootDirectories();
+      const target = d[0] + '/test_png.zip';
+      const result = bm.getPage(target, 1);
+      return Promise.all([
+        result.should.eventually.have.property('type', 'png'),
+        result.should.eventually.have.property('binData'),
+      ]);
     });
   });
 

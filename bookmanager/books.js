@@ -1,7 +1,8 @@
 const fs = require('fs');
 const path = require('path');
+const pageExtractor = require('./page-extractor');
 
-const BooksMixin = Base => class extends Base {
+module.exports.booksMixinBuilder = Base => class extends Base {
   async getBooks() {
     var results = [];
     const entries = await this._getAllEntries();
@@ -12,6 +13,28 @@ const BooksMixin = Base => class extends Base {
     return results;
   }
 
+  async getPage(vpath, page) {
+    const realPath = this._vpathToRealPath(vpath);
+    if (!realPath) {
+      return Promise.reject({ status: 404,
+                              message: `invalid vpath: ${vpath}`
+                            });
+    }
+    const entry = await this.getEntry(vpath);
+    if (!vpath) {
+      return Promise.reject({ status: 404,
+                              message: `invalid vpath: ${vpath}`
+                            });
+    }
+    if (page >= entry.pages) {
+      return Promise.reject({ status: 404,
+                              message: `invalid page: ${page}`
+                            });
+    }
+
+    return pageExtractor.getPage(realPath, page);
+  }
+
   async getBook(vpath) {
     const realPath = this._vpathToRealPath(vpath);
     if (!realPath) {
@@ -19,7 +42,9 @@ const BooksMixin = Base => class extends Base {
                               message: `invalid vpath: ${vpath}`
                             });
     }
+    await this.db.open();
     const entry = await this.db.getEntry(vpath);
+    await this.db.close();
     return entry;
   }
 
@@ -69,4 +94,3 @@ const BooksMixin = Base => class extends Base {
   }
 };
 
-module.exports = BooksMixin;
