@@ -93,7 +93,7 @@ paths:
     get:
       x-swagger-router-controller: Default
       description: Returns the image corresponding to the page
-      operationId: getPageImage
+      operationId: getPage
       parameters:
         - in: path
           name: vpath

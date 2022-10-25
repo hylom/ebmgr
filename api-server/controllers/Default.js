@@ -90,3 +90,15 @@ module.exports.getDirectories = function getDirectories (req, res, next) {
     })
     .catch(error => _sendError(error, res));
 };
+
+module.exports.getPage = function getPage(req, res, next) {
+  const vpath = _getPathParam(req, 'vpath');
+  const page = _getPathParam(req, 'page');
+  ebmgr.getPage(vpath, page)
+    .then(result => {
+      res.type(result.type);
+      res.send(result.binData);
+      res.end();
+    })
+    .catch(error => _sendError(error, res));
+};
