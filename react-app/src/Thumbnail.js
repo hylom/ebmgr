@@ -17,6 +17,7 @@ class Thumbnail extends Component {
     this.onDoubleClickThumbnail = this.onDoubleClickThumbnail.bind(this);
     this.toggleFav = this.toggleFav.bind(this);
     this.toggleCheck = this.toggleCheck.bind(this);
+    this.openBook = props.openBook;
   }
 
   componentDidMount() {
@@ -71,10 +72,13 @@ class Thumbnail extends Component {
   }
 
   onDoubleClickThumbnail() {
+    /*
     const client = getClient();
     client.openBook(this.props.item.vpath).catch(error => {
       console.log(error);
-    });
+      });
+    */
+    this.props.openBook(this.props.item.vpath);
   }
 
   toggleFav() {

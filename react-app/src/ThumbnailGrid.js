@@ -38,6 +38,9 @@ class ThumbnailGrid extends Component {
     });
   }
 
+  openBook(vpath) {
+  }
+
   thumbnailLoaded(err) {
     if (err && err.error) {
       this.logger.info(err.error);
@@ -191,9 +194,10 @@ class ThumbnailGrid extends Component {
       return (
           <li key={x.title}>
           <Thumbnail onLoadThumbnail={this.thumbnailLoaded}
-                     setFavorite={this.setFavorite}
-                     setCheck={this.setCheck}
-                     item={x}
+        setFavorite={this.setFavorite}
+        setCheck={this.setCheck}
+        openBook={this.props.openBook}
+        item={x}
           />
           </li>
       );
