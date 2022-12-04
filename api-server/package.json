@@ -19,5 +19,8 @@
     "js-yaml": "^3.3.0",
     "morgan": "^1.10.0",
     "oas3-tools": "^2.0.2"
+  },
+  "devDependencies": {
+    "dredd": "^14.1.0"
   }
 }

@@ -102,3 +102,27 @@ module.exports.getPage = function getPage(req, res, next) {
     })
     .catch(error => _sendError(error, res));
 };
+
+module.exports.getToc = function getToc(req, res, next) {
+  const vpath = _getPathParam(req, 'vpath');
+  ebmgr.getBook(vpath)
+    .then(result => {
+      if (!result) {
+        res.status(404).json({ error: 'not_found' });
+        res.end();
+        return;
+      }
+      const evpath = encodeURIComponent(vpath);
+      const toc = {
+        src: `/api/v1/books/${evpath}/pages/%d`,
+        totalPages: result.pages,
+      };
+      res.status(200);
+      res.json(toc);
+      res.end();
+    })
+    .catch(error => {
+      _sendError(error, res);
+    });
+  
+}
