@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { mihiraki } from 'mihiraki';
 import './sushi.css';
 
 export function ImageViewer(props) {
@@ -7,38 +8,23 @@ export function ImageViewer(props) {
 
   const vpath = props.vpath;
 
-  if (currentPage != 0) {
-    setSingleLayout(false);
-  }
-
-  let pages = '';
-  if (isSingleLayout) {
-    pages = (
-      <div className="page">
-        <img className="vh100" src={getPageUrl(vpath, currentPage)} />
-      </div>
-    );
-  } else {
-  }
-
   function back() {
     console.log('back');
     props.closeViewer();
   }
 
+  const baseUrl = '/api/v1/books';
+  const tocUrl = `${baseUrl}/${encodeURIComponent(vpath)}/toc`;
+
   return (
-    <div className="imageViewer">
+    <div className="imageViewer w100">
       <div className="header">
         <a href="#" onClick={back}>back</a>
       </div>
       <div className="body">
-        {pages}
+        <mihiraki-viewer toc={tocUrl} />
       </div>
     </div>
   );
 }
 
-function getPageUrl(vpath, page) {
-  const baseUrl = '/api/v1/books';
-  return `${baseUrl}/${encodeURIComponent(vpath)}/pages/${page}`;
-}
