@@ -29,6 +29,7 @@ export const AppView = props => {
         <Sidebar visible={sidebarVisibility} />
         <ThumbnailGrid toggleSidebar={toggleSidebar}
                        openBook={open}
+                       selected={selectedBook}
         />
       </div>
     );

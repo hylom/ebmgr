@@ -27,15 +27,27 @@ class ThumbnailGrid extends Component {
     this.closeDialog = this.closeDialog.bind(this);
     this.editTag = this.editTag.bind(this);
     this.toggleSidebar = this.toggleSidebar.bind(this);
+    this.selected = null;
   }
 
   componentDidMount() {
+    console.log("mount");
     const client = getClient();
     client.getBooks().then(results => {
       this.setState({ items: results,
                       loading: false,
                     });
     });
+  }
+
+  componentDidUpdate() {
+    console.log("update");
+    console.log(this.selected);
+    const el = document.getElementById('selectedItem');
+    if (el) {
+      el.scrollIntoView();
+      console.log("scroll");
+    }
   }
 
   openBook(vpath) {
@@ -178,6 +190,8 @@ class ThumbnailGrid extends Component {
 
   render() {
     let targetItems = this.state.items;
+    const selected = this.props.selected;
+    
     if (this.state.queryString) {
       //const query = this.parseQueryString(this.state.queryString);
       let query = {};
@@ -190,24 +204,45 @@ class ThumbnailGrid extends Component {
       targetItems = this._applyFilter(query, targetItems);
     }
       
+    if (selected) {
+      this.selected = React.createRef();
+    } else {
+      this.selected = null;
+      console.log('no selected');
+    }
     const makeThumb = x => {
-      return (
-          <li key={x.title}>
-          <Thumbnail onLoadThumbnail={this.thumbnailLoaded}
-        setFavorite={this.setFavorite}
-        setCheck={this.setCheck}
-        openBook={this.props.openBook}
-        item={x}
-          />
+      if (selected && x.vpath == selected) {
+        console.log(`selected: ${selected}`);
+        return (
+          <li key={x.title} ref={this.selected} id="selectedItem">
+            <Thumbnail onLoadThumbnail={this.thumbnailLoaded}
+                       setFavorite={this.setFavorite}
+                       setCheck={this.setCheck}
+                       openBook={this.props.openBook}
+                       item={x}
+            />
           </li>
-      );
+        );
+      } else {
+        return (
+          <li key={x.title}>
+            <Thumbnail onLoadThumbnail={this.thumbnailLoaded}
+                       setFavorite={this.setFavorite}
+                       setCheck={this.setCheck}
+                       openBook={this.props.openBook}
+                       item={x}
+            />
+          </li>
+        );
+      }
     };
     const listItems = targetItems.map(makeThumb);
     let scene = "";
     if (this.state.scene === "editTag") {
       scene = (<TagEditDialog closeHandler={this.closeDialog} />);
     }
-    
+
+    console.log(this.selected);
     return (
         <div className="ThumbnailGrid">
         {scene}
