@@ -10,7 +10,8 @@ const { initialize } = require('express-openapi');
 const serverPort = 3333;
 
 // check running environment
-const mode = process.env.EBM_MODE || 'development';
+//const mode = process.env.EBM_MODE || 'development';
+const mode = process.env.EBM_MODE || 'production';
 
 //TODO: const oasDefinition = path.join(__dirname, 'api/openapi.yaml');
 const apiSpec = path.join(__dirname, '../openapi/ebmgr.yaml');
@@ -69,7 +70,7 @@ if (mode == 'development') {
             changeOrigin: true,
             ws: true }));
 } else {
-  app.use(express.static('public'));
+  app.use(express.static('../react-app/build'));
 }
 
 http.createServer(app).listen(serverPort, function () {
